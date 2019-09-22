@@ -2,6 +2,7 @@ package com.zmall.dao;
 
 import com.zmall.pojo.Order;
 import com.zmall.pojo.OrderExample;
+import org.apache.ibatis.annotations.Param;
 
 public interface OrderMapper {
     int deleteByExample(OrderExample example);
@@ -17,4 +18,8 @@ public interface OrderMapper {
     int updateByPrimaryKeySelective(Order record);
 
     int updateByPrimaryKey(Order record);
+
+    Order selectByUserIdAndOrderNo(@Param("userId") Integer userId,@Param("orderNo") Long orderNo);
+
+    Order selectByOrderNo(Long orderNo);
 }

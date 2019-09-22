@@ -2,6 +2,9 @@ package com.zmall.dao;
 
 import com.zmall.pojo.Product;
 import com.zmall.pojo.ProductExample;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface ProductMapper {
     int deleteByExample(ProductExample example);
@@ -17,4 +20,10 @@ public interface ProductMapper {
     int updateByPrimaryKeySelective(Product record);
 
     int updateByPrimaryKey(Product record);
+
+    List<Product> selectList();
+
+    List<Product> selectByNameAndProductId(@Param("productName")String productName,@Param("productId")Integer productId);
+
+    List<Product> selectByNameAndCategoryIds(@Param("productName")String productName,@Param("categoryIdList") List<Integer> categoryIdList);
 }

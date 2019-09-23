@@ -4,6 +4,8 @@ import com.zmall.pojo.Order;
 import com.zmall.pojo.OrderExample;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface OrderMapper {
     int deleteByExample(OrderExample example);
 
@@ -22,4 +24,8 @@ public interface OrderMapper {
     Order selectByUserIdAndOrderNo(@Param("userId") Integer userId,@Param("orderNo") Long orderNo);
 
     Order selectByOrderNo(Long orderNo);
+
+    List<Order> selectByUserId(Integer userId);
+
+    List<Order> selectAllOrder();
 }

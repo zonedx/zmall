@@ -45,4 +45,45 @@ public class PropertiesUtil {
         }
         return value.trim();
     }
+
+    public static Integer getIntegerProperty(String key) {
+        String value = props.getProperty(key.trim());
+        Integer valueInt = 0;
+        if (StringUtils.isBlank(value)) {
+            return valueInt;
+        }
+        valueInt = Integer.parseInt(value);
+        return valueInt;
+    }
+
+    public static Integer getIntegerProperty(String key, String defaultValue) {
+        String value = props.getProperty(key.trim());
+        Integer valueInt = 0;
+        if (StringUtils.isBlank(value)) {
+            value = defaultValue;
+        }
+        valueInt = Integer.parseInt(value);
+        return valueInt;
+    }
+
+    public static Boolean getBooleanProperty(String key) {
+        String value = props.getProperty(key.trim());
+        Boolean valueBool = null;
+        if (StringUtils.isBlank(value)) {
+            return valueBool;
+        }
+        valueBool = Boolean.parseBoolean(value);
+        return valueBool;
+    }
+
+    public static Boolean getBooleanProperty(String key, String defaultValue) {
+        String value = props.getProperty(key.trim());
+        Boolean valueBool ;
+        if (StringUtils.isBlank(value)) {
+            value = defaultValue;
+        }
+        valueBool = Boolean.parseBoolean(value);
+        return valueBool;
+    }
+
 }

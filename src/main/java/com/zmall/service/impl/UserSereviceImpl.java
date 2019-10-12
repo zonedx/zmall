@@ -2,11 +2,11 @@ package com.zmall.service.impl;
 
 import com.zmall.common.Const;
 import com.zmall.common.ServerResponse;
-import com.zmall.common.TokenCache;
 import com.zmall.dao.UserMapper;
 import com.zmall.pojo.User;
 import com.zmall.service.IUserService;
 import com.zmall.util.MD5Util;
+import com.zmall.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,7 +124,8 @@ public class UserSereviceImpl implements IUserService {
         if (resultCount > 0) {
             //说明问题及问题的答案是这个用户的，并且是正确的
             String forgetToken = UUID.randomUUID().toString();
-            TokenCache.setKey(TokenCache.TOKEN_PREFIX + username, forgetToken);
+            RedisShardedPoolUtil.setEx(Const.TOKEN_PREFIX + username, forgetToken, 60 * 60 * 12);
+            //TokenCache.setKey(TokenCache.TOKEN_PREFIX + username, forgetToken);
             return ServerResponse.createBySuccess(forgetToken);
         }
         return ServerResponse.createByErrorMessage("问题的答案错误");
@@ -141,7 +142,8 @@ public class UserSereviceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("用户不存在");
         }
 
-        String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);
+        //String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);
+        String token = RedisShardedPoolUtil.get(Const.TOKEN_PREFIX + username);
         if (StringUtils.isBlank(token)) {
             return ServerResponse.createByErrorMessage("token无效或者过期");
         }
@@ -192,16 +194,16 @@ public class UserSereviceImpl implements IUserService {
         updateUser.setAnswer(user.getAnswer());
 
         int updateCount = userMapper.updateByPrimaryKeySelective(updateUser);
-        if (updateCount > 0){
-            return ServerResponse.createBySuccess("更新个人信息成功",updateUser);
+        if (updateCount > 0) {
+            return ServerResponse.createBySuccess("更新个人信息成功", updateUser);
         }
         return ServerResponse.createByErrorMessage("更新个人信息失败");
     }
 
     @Override
-    public ServerResponse<User> getInformation(Integer userId){
+    public ServerResponse<User> getInformation(Integer userId) {
         User user = userMapper.selectByPrimaryKey(userId);
-        if(user == null){
+        if (user == null) {
             return ServerResponse.createByErrorMessage("找不到当前用户");
         }
         user.setPassword(StringUtils.EMPTY);
@@ -211,12 +213,13 @@ public class UserSereviceImpl implements IUserService {
 
     /**
      * backend
+     *
      * @param user
      * @return
      */
     @Override
-    public ServerResponse checkAdminRole(User user){
-        if (user!=null &&user.getRole().intValue() == Const.Role.ROLE_ADMIN){
+    public ServerResponse checkAdminRole(User user) {
+        if (user != null && user.getRole().intValue() == Const.Role.ROLE_ADMIN) {
             return ServerResponse.createBySuccess();
         }
         return ServerResponse.createByError();

@@ -23,8 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @ClassName: ProductServiceImpl
@@ -140,6 +139,7 @@ public class ProductServiceImpl implements IProductService {
         //startPage--start
         //填充自己的sql查询逻辑
         //pageHelper 收尾
+        System.out.println("================");
         PageHelper.startPage(pageNum, pageSize);
         List<Product> productList = productMapper.selectList();
         List<ProductListVo> productListVos = Lists.newArrayList();

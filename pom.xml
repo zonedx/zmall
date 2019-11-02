@@ -267,7 +267,8 @@
             <encoding>UTF-8</encoding>
             <fork>true</fork>
             <executable>
-              /Library/Java/JavaVirtualMachines/jdk1.8.0_221.jdk/Contents/Home/bin/javac
+              /usr/local/java/jdk1.8.0_131/bin
+<!--              /Library/Java/JavaVirtualMachines/jdk1.8.0_221.jdk/Contents/Home/bin/javac-->
             </executable>
             <compilerArgs>
               <arg>-verbose</arg>

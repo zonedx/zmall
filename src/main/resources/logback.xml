@@ -10,13 +10,13 @@
         </filter>
     </appender>
 
-    <appender name="zmall" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="info" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!--<File>d:/mmalllog/mmall.log</File>-->
-        <File>/usr/local/apache-tomcat-8.5.47/zmall.log</File>
+        <File>/root/developer/logs/info.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/Users/zone/myProduct/logs/zmall.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>/root/developer/logs/info.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
             <append>true</append>
-            <maxHistory>10</maxHistory>
+            <maxHistory>15</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>[%d{HH:mm:ss.SSS}][%p][%c{40}][%t] %m%n</pattern>
@@ -26,12 +26,12 @@
 
     <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!--<File>d:/mmalllog/error.log</File>-->
-        <File>/usr/local/apache-tomcat-8.5.47/error.log</File>
+        <File>/root/developer/logs/error.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/usr/local/apache-tomcat-8.5.47/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>/root/developer/logs/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
             <!--<fileNamePattern>d:/mmalllog/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>-->
             <append>true</append>
-            <maxHistory>10</maxHistory>
+            <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>[%d{HH:mm:ss.SSS}][%p][%c{40}][%t] %m%n</pattern>
@@ -44,7 +44,7 @@
     </appender>
 
     <logger name="com.zmall" additivity="false" level="INFO" >
-        <appender-ref ref="zmall" />
+        <appender-ref ref="info" />
         <appender-ref ref="console"/>
         <appender-ref ref="error"/>
     </logger>

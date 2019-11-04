@@ -134,7 +134,7 @@
       <version>3.2.1</version>
       <exclusions>
         <exclusion>
-          <groupId>com.google.collections</groupId>
+          <groupId>commons-collections</groupId>
           <artifactId>google-collections</artifactId>
         </exclusion>
       </exclusions>

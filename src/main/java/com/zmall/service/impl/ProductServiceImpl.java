@@ -157,7 +157,7 @@ public class ProductServiceImpl implements IProductService {
         productListVo.setId(product.getId());
         productListVo.setCategoryId(product.getCategoryId());
         productListVo.setName(product.getName());
-        productListVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix", "ftp://www.zonedx.cn/product/image/"));
+        productListVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix", "http://www.zonedx.cn/product/image/"));
         productListVo.setMainImage(product.getMainImage());
         productListVo.setPrice(product.getPrice());
         productListVo.setSubtitle(product.getSubtitle());

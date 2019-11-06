@@ -118,7 +118,7 @@ public class ProductServiceImpl implements IProductService {
         productDetailVo.setStock(product.getStock());
 
         //imageHost
-        productDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix", "ftp://127.0.0.1/"));
+        productDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix", "http://www.zonedx.cn/product/image/"));
         //parentCategoryId
         Category category = categoryMapper.selectByPrimaryKey(product.getCategoryId());
         if (category == null) {

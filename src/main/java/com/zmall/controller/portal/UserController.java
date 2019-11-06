@@ -165,8 +165,11 @@ public class UserController {
         user.setId(currentUser.getId());
         user.setUsername(currentUser.getUsername());
         ServerResponse<User> response = iUserService.updateInformation(user);
+        // 实际上此时返回的user = response.getData();此user对象没有username、updateTime等字段，需要将username字段返回
+        User newUser = response.getData();
+        newUser.setUsername(currentUser.getUsername());
         if(response.isSuccess()){
-            session.setAttribute(Const.CURRENT_USER,response.getData());
+            session.setAttribute(Const.CURRENT_USER,newUser);
         }
         return response;
     }

@@ -228,6 +228,7 @@ public class OrderServiceImpl implements IOrderService {
     public OrderItemVo assembleOrderItemVo(OrderItem orderItem) {
         OrderItemVo orderItemVo = new OrderItemVo();
         orderItemVo.setOrderNo(orderItem.getOrderNo());
+        orderItemVo.setProductImage(orderItem.getProductImage());
         orderItemVo.setProductId(orderItem.getProductId());
         orderItemVo.setCurrentUnitPrice(orderItem.getCurrentUnitPrice());
         orderItemVo.setProductName(orderItem.getProductName());

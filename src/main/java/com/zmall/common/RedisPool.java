@@ -1,6 +1,12 @@
 package com.zmall.common;
 
+import com.zmall.config.MixPropertySourceFactory;
 import com.zmall.util.PropertiesUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -10,48 +16,61 @@ import redis.clients.jedis.JedisPoolConfig;
  * @Date 2019-10-08 15:12
  * @Author duanxin
  **/
+@Configuration
+@PropertySource(value = "classpath:application.yml")
 public class RedisPool {
 
     private static JedisPool pool;//jedis连接池
-    private static Integer maxTotal = PropertiesUtil.getIntegerProperty("redis.max.total","20");//最大连接数
-    private static Integer maxIdle = PropertiesUtil.getIntegerProperty("redis.max.idle","10"); //在jedispool中最大的idle状态（空闲）的jedis实例的个数
-    private static Integer minIdle = PropertiesUtil.getIntegerProperty("redis.min.idle","2"); //在jedispool中最小的idle状态（空闲）的jedis实例的个数
+    private static String maxTotal = "redis.max.total";//最大连接数
+    private static String maxIdle = "redis.max.idle"; //在jedispool中最大的idle状态（空闲）的jedis实例的个数
+    private static String minIdle = "redis.min.idle"; //在jedispool中最小的idle状态（空闲）的jedis实例的个数
 
-    private static Boolean testOnBorrow = PropertiesUtil.getBooleanProperty("redis.test.borrow","true"); //在borrow一个jedis实例的时候，是否要进行验证操作。如果赋值true，则得到的jedis实例肯定是可以用的。
-    private static Boolean testOnReturn = PropertiesUtil.getBooleanProperty("redis.test.return","true");; //在return一个jedis实例的时候，是否要进行验证操作。如果赋值true，则放回jedispool的jedis实例肯定是可以用的。
+    private static String testOnBorrow = "redis.test.borrow"; //在borrow一个jedis实例的时候，是否要进行验证操作。如果赋值true，则得到的jedis实例肯定是可以用的。
+    private static String testOnReturn = "redis.test.return";; //在return一个jedis实例的时候，是否要进行验证操作。如果赋值true，则放回jedispool的jedis实例肯定是可以用的。
 
-    private static String redisIp = PropertiesUtil.getProperty("redis.ip");
-    private static Integer redisPort = PropertiesUtil.getIntegerProperty("redis.port");
+    private static String redisIp = "redis.ip";
+    private static String redisPort = "redis.port";
 
-    private static void initPool(){
-        JedisPoolConfig config = new JedisPoolConfig();
-        config.setMaxTotal(maxTotal);
-        config.setMaxIdle(maxIdle);
-        config.setMinIdle(minIdle);
+    @Autowired
+    private Environment env;
 
-        config.setTestOnBorrow(testOnBorrow);
-        config.setTestOnReturn(testOnReturn);
 
-        config.setBlockWhenExhausted(true);//连接耗尽的时候，是否阻塞，false会抛出异常，true阻塞直到超时。默认为true
-
-        pool = new JedisPool(config,redisIp,redisPort,1000*2);
+    public  void getIp(){
+        String str = env.getRequiredProperty(testOnBorrow);
+        String str1 = env.getRequiredProperty(maxTotal);
+        System.out.println("+++++++++"+str);
+        System.out.println("+++++++++"+str1);
     }
-
-    static {
-        initPool();
-    }
-
-    public static Jedis getJedis(){
-        return pool.getResource();
-    }
-
-    public static void returnResource(Jedis jedis){
-        pool.returnResource(jedis);
-    }
-
-    public static void returnBrokenResource(Jedis jedis){
-        pool.returnBrokenResource(jedis);
-    }
+//    private static void initPool(){
+//        JedisPoolConfig config = new JedisPoolConfig();
+//        System.out.println("==========");
+//        config.setMaxTotal(Integer.parseInt(maxTotal));
+//        config.setMaxIdle(Integer.parseInt(maxIdle));
+//        config.setMinIdle(Integer.parseInt(minIdle));
+//
+//        config.setTestOnBorrow(Boolean.parseBoolean(testOnBorrow));
+//        config.setTestOnReturn(Boolean.parseBoolean(testOnReturn));
+//
+//        config.setBlockWhenExhausted(true);//连接耗尽的时候，是否阻塞，false会抛出异常，true阻塞直到超时。默认为true
+//
+//        pool = new JedisPool(config,redisIp, Integer.parseInt(redisPort),1000*2);
+//    }
+//
+//    static {
+//        initPool();
+//    }
+//
+//    public static Jedis getJedis(){
+//        return pool.getResource();
+//    }
+//
+//    public static void returnResource(Jedis jedis){
+//        pool.returnResource(jedis);
+//    }
+//
+//    public static void returnBrokenResource(Jedis jedis){
+//        pool.returnBrokenResource(jedis);
+//    }
 
 //    public static void main(String[] args) {
 //        Jedis jedis = pool.getResource();

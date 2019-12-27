@@ -6,7 +6,7 @@ import com.zmall.dao.UserMapper;
 import com.zmall.pojo.User;
 import com.zmall.service.IUserService;
 import com.zmall.util.MD5Util;
-import com.zmall.util.RedisShardedPoolUtil;
+import com.zmall.util.RedisPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,7 +124,7 @@ public class UserSereviceImpl implements IUserService {
         if (resultCount > 0) {
             //说明问题及问题的答案是这个用户的，并且是正确的
             String forgetToken = UUID.randomUUID().toString();
-            RedisShardedPoolUtil.setEx(Const.TOKEN_PREFIX + username, forgetToken, 60 * 60 * 12);
+            RedisPoolUtil.setEx(Const.TOKEN_PREFIX + username, forgetToken, 60 * 60 * 12);
             //TokenCache.setKey(TokenCache.TOKEN_PREFIX + username, forgetToken);
             return ServerResponse.createBySuccess(forgetToken);
         }
@@ -143,7 +143,7 @@ public class UserSereviceImpl implements IUserService {
         }
 
         //String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);
-        String token = RedisShardedPoolUtil.get(Const.TOKEN_PREFIX + username);
+        String token = RedisPoolUtil.get(Const.TOKEN_PREFIX + username);
         if (StringUtils.isBlank(token)) {
             return ServerResponse.createByErrorMessage("token无效或者过期");
         }

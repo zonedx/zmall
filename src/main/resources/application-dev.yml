@@ -1,0 +1,60 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/zmall?characterEncoding=utf8&useSSL=false&&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+    type: org.apache.commons.dbcp.BasicDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    dbcp2:
+      initial-size: 20
+      min-evictable-idle-time-millis: 3600000
+    tomcat:
+      max-active: 50
+      max-idle: 20
+      min-idle: 10
+      max-wait: 10
+      default-auto-commit: true
+
+mybatis:
+  mapper-locations: classpath:mappers/*Mapper.xml
+  type-aliases-package: com.zmall.pojo
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+
+
+#redis
+redis:
+  ip: 127.0.0.1
+  port: 6379
+  max:
+    total: 20
+    idle: 10
+  min:
+    idle: 2
+  test:
+    borrow: true
+    return: false
+#ftp
+ftp:
+  server:
+    ip: 127.0.0.1
+    http:
+      prefix: ftp://127.0.0.1/
+  user: ftpuser
+  pass: 123456
+
+alipay:
+  callback:
+    url: http://www.zonedx.cn/order/alipay_callback.do
+
+password:
+  salt: geelysdafaqj23ou89ZXcj@#$@#$#@KJdjklj;D../dSF.,
+#
+#logging:
+#  level: debug
+

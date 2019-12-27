@@ -6,9 +6,10 @@ import com.zmall.common.ServerResponse;
 import com.zmall.pojo.User;
 import com.zmall.util.CookieUtil;
 import com.zmall.util.JsonUtil;
-import com.zmall.util.RedisShardedPoolUtil;
+import com.zmall.util.RedisPoolUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,6 +27,7 @@ import java.util.Map;
  * @Author duanxin
  **/
 
+@Component
 @Slf4j
 public class AuthorityInterceptor implements HandlerInterceptor {
     @Override
@@ -69,7 +71,7 @@ public class AuthorityInterceptor implements HandlerInterceptor {
         User user = null;
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(loginToken)){
-            String userJsonStr = RedisShardedPoolUtil.get(loginToken);
+            String userJsonStr = RedisPoolUtil.get(loginToken);
             user = JsonUtil.string2Obj(userJsonStr,User.class);
         }
 

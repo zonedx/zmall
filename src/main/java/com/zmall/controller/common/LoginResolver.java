@@ -1,5 +1,6 @@
 package com.zmall.controller.common;
 
+import com.zmall.common.LogicException;
 import com.zmall.pojo.User;
 import com.zmall.util.CookieUtil;
 import com.zmall.util.JsonUtil;
@@ -42,10 +43,10 @@ public class LoginResolver extends HandlerInterceptorAdapter implements HandlerM
                 int role = login.value();
                 final User user = getUser(request);
                 if (user == null) {
-                    throw new ControllerException(ResultCode.NOT_LOGIN, "用户未登录");
+                    throw new LogicException(ResultCode.NOT_LOGIN, "用户未登录");
                 }
                 if (user.getRole() == null || user.getRole() != role) {
-                    throw new ControllerException(ResultCode.NO_PERMISSION, "用户无权限操作");
+                    throw new LogicException(ResultCode.NO_PERMISSION, "用户无权限操作");
                 }
                 userThreadLocal.set(user);
             }

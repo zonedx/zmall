@@ -33,14 +33,21 @@ public class LoginResolver extends HandlerInterceptorAdapter implements HandlerM
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (handler instanceof HandlerMethod) {
             HandlerMethod method = (HandlerMethod) handler;
-            if (method.getMethod().isAnnotationPresent(Login.class)) {
+            Login login;
+            login = method.getMethod().getAnnotation(Login.class);
+            if (login == null) {
+                login = method.getBeanType().getAnnotation(Login.class);
+            }
+            if (login != null) {
+                int role = login.value();
                 final User user = getUser(request);
                 if (user == null) {
-                    // TODO
-                    return false;
-                } else {
-                    userThreadLocal.set(user);
+                    throw new ControllerException(ResultCode.NOT_LOGIN, "用户未登录");
                 }
+                if (user.getRole() == null || user.getRole() != role) {
+                    throw new ControllerException(ResultCode.NO_PERMISSION, "用户无权限操作");
+                }
+                userThreadLocal.set(user);
             }
         }
         return true;

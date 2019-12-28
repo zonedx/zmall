@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @Author duanxin
  **/
 @Controller
+@Login
 @RequestMapping("/cart/")
 public class CartController {
 
@@ -26,28 +27,24 @@ public class CartController {
 
     @RequestMapping("list.do")
     @ResponseBody
-    @Login
     public ServerResponse<CartVo> list(@CurrentUser User user) {
         return iCartService.list(user.getId());
     }
 
     @RequestMapping("add.do")
     @ResponseBody
-    @Login
     public ServerResponse<CartVo> add(@CurrentUser User user, Integer count, Integer productId) {
         return iCartService.add(user.getId(), productId, count);
     }
 
     @RequestMapping("update.do")
     @ResponseBody
-    @Login
     public ServerResponse update(@CurrentUser User user, Integer count, Integer productId) {
         return iCartService.update(user.getId(), productId, count);
     }
 
     @RequestMapping("delete_product.do")
     @ResponseBody
-    @Login
     public ServerResponse deleteProduct(@CurrentUser User user, String productIds) {
         return iCartService.deleteProduct(user.getId(), productIds);
     }
@@ -57,14 +54,12 @@ public class CartController {
 
     @RequestMapping("select_all.do")
     @ResponseBody
-    @Login
     public ServerResponse<CartVo> selectAll(@CurrentUser User user) {
         return iCartService.selectOrUnSelect(user.getId(), null, Const.Cart.CHECKED);
     }
 
     @RequestMapping("un_select_all.do")
     @ResponseBody
-    @Login
     public ServerResponse<CartVo> unSelectAll(@CurrentUser User user) {
         return iCartService.selectOrUnSelect(user.getId(), null, Const.Cart.UN_CHECKED);
     }
@@ -74,14 +69,12 @@ public class CartController {
 
     @RequestMapping("select.do")
     @ResponseBody
-    @Login
     public ServerResponse<CartVo> select(Integer productId, @CurrentUser User user) {
         return iCartService.selectOrUnSelect(user.getId(), productId, Const.Cart.CHECKED);
     }
 
     @RequestMapping("un_select.do")
     @ResponseBody
-    @Login
     public ServerResponse<CartVo> unSelect(Integer productId, User user) {
         return iCartService.selectOrUnSelect(user.getId(), productId, Const.Cart.UN_CHECKED);
     }
@@ -90,7 +83,6 @@ public class CartController {
 
     @RequestMapping("get_cart_product_count.do")
     @ResponseBody
-    @Login
     public ServerResponse<Integer> getCartProductCount(@CurrentUser User user) {
         return iCartService.getCartProductCount(user.getId());
 

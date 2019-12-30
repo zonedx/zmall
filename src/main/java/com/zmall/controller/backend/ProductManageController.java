@@ -32,7 +32,7 @@ import java.util.Map;
  * @Author duanxin
  **/
 @Controller
-@RequestMapping("/manage/product/")
+@RequestMapping("/manager/product/")
 public class ProductManageController {
 
     @Autowired

@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
  * @Author duanxin
  **/
 @Controller
-@RequestMapping("/manage/order/")
+@RequestMapping("/manager/order/")
 public class OrderManageController {
 
     @Autowired

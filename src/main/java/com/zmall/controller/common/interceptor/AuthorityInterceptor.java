@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +30,7 @@ import java.util.Map;
 
 @Component
 @Slf4j
-public class AuthorityInterceptor implements HandlerInterceptor {
+public class AuthorityInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) throws Exception {
         log.info("preHandle*********");
@@ -41,23 +42,22 @@ public class AuthorityInterceptor implements HandlerInterceptor {
         String className = handlerMethod.getBean().getClass().getSimpleName();
 
         //解析参数，具体的参数key以及value是什么，打印日志
-        StringBuffer requestParamBuffer = new StringBuffer();
+        StringBuilder builder = new StringBuilder();
         Map paramMap = httpServletRequest.getParameterMap();
-        Iterator it = paramMap.keySet().iterator();
-        while (it.hasNext()){
-            Map.Entry entry = (Map.Entry) it.next();
+        for (Object o : paramMap.entrySet()) {
+            Map.Entry entry = (Map.Entry) o;
             String mapKey = (String) entry.getKey();
             String mapValue = StringUtils.EMPTY;
 
             //request这个参数的map，里面的value返回的是一个String[]
             Object obj = entry.getValue();
-            if (obj instanceof String[]){
+            if (obj instanceof String[]) {
                 String[] strs = (String[]) obj;
                 mapValue = Arrays.toString(strs);
             }
-            requestParamBuffer.append(mapKey).append("=").append(mapValue);
+            builder.append(mapKey).append("=").append(mapValue);
             //安全性考虑不打印到日志信息中
-            //log.info("{}",requestParamBuffer);
+            //log.info("{}",builder);
         }
 
         if (StringUtils.equals(className,"UserManagerController") && StringUtils.equals(methodName,"login")){
@@ -66,7 +66,7 @@ public class AuthorityInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        log.info("拦截器拦截到请求，className:{},methodName:{},param:{}",className,methodName,requestParamBuffer.toString());
+        log.info("拦截器拦截到请求，className:{},methodName:{},param:{}",className,methodName,builder.toString());
 
         User user = null;
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
@@ -75,7 +75,7 @@ public class AuthorityInterceptor implements HandlerInterceptor {
             user = JsonUtil.string2Obj(userJsonStr,User.class);
         }
 
-        if (user == null || (user.getRole().intValue() != Const.Role.ROLE_ADMIN)){
+        if (user == null || (user.getRole() != Const.Role.ROLE_ADMIN)){
             //返回false不会调用controller中的方法
 
             httpServletResponse.reset();//这里要添加reset(),否则会报异常  getWriter() has already been called for this response

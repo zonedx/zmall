@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  * @Author duanxin
  **/
 @Controller
-@RequestMapping("/manage/category/")
+@RequestMapping("/manager/category/")
 public class CategoryManagerController {
 
     @Autowired

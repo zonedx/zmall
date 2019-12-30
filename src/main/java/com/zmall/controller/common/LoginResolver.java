@@ -4,6 +4,7 @@ import com.zmall.common.LogicException;
 import com.zmall.pojo.User;
 import com.zmall.util.CookieUtil;
 import com.zmall.util.JsonUtil;
+import com.zmall.util.RedisPoolUtil;
 import com.zmall.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
@@ -45,7 +46,7 @@ public class LoginResolver extends HandlerInterceptorAdapter implements HandlerM
                 if (user == null) {
                     throw new LogicException(ResultCode.NOT_LOGIN, "用户未登录");
                 }
-                if (user.getRole() == null || user.getRole() != role) {
+                if (user.getRole() == null || user.getRole() < role) {
                     throw new LogicException(ResultCode.NO_PERMISSION, "用户无权限操作");
                 }
                 userThreadLocal.set(user);
@@ -64,7 +65,7 @@ public class LoginResolver extends HandlerInterceptorAdapter implements HandlerM
         if (StringUtils.isEmpty(loginToken)) {
             return null;
         }
-        String userJsonStr = RedisShardedPoolUtil.get(loginToken);
+        String userJsonStr = RedisPoolUtil.get(loginToken);
         return JsonUtil.string2Obj(userJsonStr, User.class);
     }
 

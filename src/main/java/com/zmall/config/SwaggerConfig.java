@@ -51,6 +51,12 @@ public class SwaggerConfig {
         tagArrayList.add(new Tag("product","商品api"));
         tagArrayList.add(new Tag("shipping","地址相关api"));
 
+        tagArrayList.add(new Tag("category-manager","管理员-商品种类api"));
+        tagArrayList.add(new Tag("order-manager","管理员-订单api"));
+        tagArrayList.add(new Tag("product-manager","管理员-商品api"));
+        tagArrayList.add(new Tag("user-manager","管理员-用户api"));
+
+
         Tag[] tags = new Tag[tagArrayList.size()];
         return tagArrayList.toArray(tags);
     }

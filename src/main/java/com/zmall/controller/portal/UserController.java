@@ -3,6 +3,7 @@ package com.zmall.controller.portal;
 import com.zmall.common.Const;
 import com.zmall.common.RedisPool;
 import com.zmall.common.ServerResponse;
+import com.zmall.controller.common.CurrentUser;
 import com.zmall.controller.common.Login;
 import com.zmall.pojo.User;
 import com.zmall.service.IUserService;
@@ -173,7 +174,7 @@ public class UserController {
     @Login
     @ApiOperation(value = "获取个人信息")
     @RequestMapping(value = "get_information.do", method = RequestMethod.GET)
-    public ServerResponse<User> getInformation(User user){
+    public ServerResponse<User> getInformation(@CurrentUser User user){
         return iUserService.getInformation(user.getId());
     }
 }

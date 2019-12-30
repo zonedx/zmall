@@ -1,65 +1,42 @@
 package com.zmall.controller.backend;
 
-import com.zmall.common.ResponseCode;
 import com.zmall.common.ServerResponse;
-import com.zmall.pojo.User;
 import com.zmall.service.ICategoryService;
-import com.zmall.service.IUserService;
-import com.zmall.util.CookieUtil;
-import com.zmall.util.JsonUtil;
-import com.zmall.util.RedisPoolUtil;
-import org.apache.commons.lang3.StringUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @ClassName: CategoryManagerController
  * @Date 2019-09-15 16:20
  * @Author duanxin
  **/
-@Controller
+@Api(tags = "category-manager")
+@RestController
 @RequestMapping("/manager/category/")
 public class CategoryManagerController {
-
-    @Autowired
-    private IUserService iUserService;
 
     @Autowired
     private ICategoryService iCategoryService;
 
     /**
      * 添加分类
+     *
      * @param categoryName
      * @param parentId
      * @return
      */
-    @RequestMapping("add_category.do")
-    @ResponseBody
-    public ServerResponse addCategory(HttpServletRequest httpServletRequest, String categoryName, @RequestParam(value = "parentId", defaultValue = "0") int parentId) {
-//        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-//        if (StringUtils.isEmpty(loginToken)){
-//            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
-//        }
-//
-//        String userJsonStr = RedisPoolUtil.get(loginToken);
-//        User user = JsonUtil.string2Obj(userJsonStr,User.class);
-//
-//        if (user == null) {
-//            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录");
-//        }
-//        //校验一下是否是管理员
-//        if (iUserService.checkAdminRole(user).isSuccess()) {
-//            //添加处理分类的逻辑
-//            return iCategoryService.addCategory(categoryName, parentId);
-//        } else {
-//            return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
-//        }
-
+    @ApiOperation(value = "添加分类")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "categoryName", value = "分类名称", required = true, paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "parentId", value = "分类父亲类别id（例如：电子产品：1，手机：2，手机的parentId=1）", required = true, paramType = "query", dataType = "int")
+    })
+    @RequestMapping(value = "add_category.do", method = RequestMethod.POST)
+    public ServerResponse addCategory(String categoryName, @RequestParam(value = "parentId", defaultValue = "0") int parentId) {
         //全部通过拦截器验证是否登录以及权限
         return iCategoryService.addCategory(categoryName, parentId);
 
@@ -67,91 +44,50 @@ public class CategoryManagerController {
 
     /**
      * 更新分类名称
+     *
      * @param categoryId
      * @param categoryName
      * @return
      */
-    @RequestMapping("set_category_name.do")
-    @ResponseBody
-    public ServerResponse setCategoryName(HttpServletRequest httpServletRequest, Integer categoryId,String categoryName) {
-//        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-//        if (StringUtils.isEmpty(loginToken)){
-//            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
-//        }
-//        String userJsonStr = RedisPoolUtil.get(loginToken);
-//        User user = JsonUtil.string2Obj(userJsonStr,User.class);
-//
-//        if (user == null) {
-//            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录");
-//        }
-//
-//        if (iUserService.checkAdminRole(user).isSuccess()) {
-//            //更新category
-//            return iCategoryService.updateCategoryName(categoryId,categoryName);
-//
-//        } else {
-//            return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
-//        }
-
+    @ApiOperation(value = "更新分类名称")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "categoryId", value = "分类id", required = true, paramType = "query", dataType = "int"),
+            @ApiImplicitParam(name = "categoryName", value = "分类名称", required = true, paramType = "query", dataType = "string")
+    })
+    @RequestMapping(value = "set_category_name.do", method = RequestMethod.POST)
+    public ServerResponse setCategoryName(Integer categoryId, String categoryName) {
         //全部通过拦截器验证是否登录以及权限
-        return iCategoryService.updateCategoryName(categoryId,categoryName);
+        return iCategoryService.updateCategoryName(categoryId, categoryName);
     }
 
     /**
      * 查询某分类的子分类
-     * @param httpServletRequest
+     *
      * @param categoryId
      * @return
      */
-    @RequestMapping("get_category.do")
-    @ResponseBody
-    public ServerResponse getChildrenParallelCategory(HttpServletRequest httpServletRequest,@RequestParam(value = "categoryId",defaultValue = "0")Integer categoryId){
-//        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-//        if (StringUtils.isEmpty(loginToken)){
-//            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
-//        }
-//        String userJsonStr = RedisPoolUtil.get(loginToken);
-//        User user = JsonUtil.string2Obj(userJsonStr,User.class);
-//        if (user == null) {
-//            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录");
-//        }
-//        if (iUserService.checkAdminRole(user).isSuccess()) {
-//            //查询子节点的category信息，并且不递归，保持平级
-//            return iCategoryService.getChildrenParallelCategory(categoryId);
-//        } else {
-//            return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
-//        }
-
+    @ApiOperation(value = "查询某分类的子分类")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "categoryId", value = "分类id", required = true, paramType = "query", dataType = "int"),
+    })
+    @RequestMapping(value = "get_category.do", method = RequestMethod.GET)
+    public ServerResponse getChildrenParallelCategory(@RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
         //全部通过拦截器验证是否登录以及权限
         return iCategoryService.getChildrenParallelCategory(categoryId);
     }
 
     /**
      * 查询某分类的子分类（包括子孙）
-     * @param httpServletRequest
+     *
      * @param categoryId
      * @return
      */
-    @RequestMapping("get_deep_category.do")
-    @ResponseBody
-    public ServerResponse getCategoryAndDeepChildrenCategory(HttpServletRequest httpServletRequest,@RequestParam(value = "categoryId",defaultValue = "0")Integer categoryId){
-//        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-//        if (StringUtils.isEmpty(loginToken)){
-//            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
-//        }
-//        String userJsonStr = RedisPoolUtil.get(loginToken);
-//        User user = JsonUtil.string2Obj(userJsonStr,User.class);
-//
-//        if (user == null) {
-//            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，请登录");
-//        }
-//        if (iUserService.checkAdminRole(user).isSuccess()) {
-//            //查询单签节点的id和递归子节点的id
-//            return iCategoryService.selectCategoryAndChildrenById(categoryId);
-//        } else {
-//            return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
-//        }
-
+    @ApiOperation(value = "查询某分类的子分类（包括子孙）")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "categoryId", value = "分类id", required = true, paramType = "query", dataType = "int"),
+    })
+    @RequestMapping(value = "get_deep_category.do", method = RequestMethod.GET)
+    public ServerResponse getCategoryAndDeepChildrenCategory(@RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
         //全部通过拦截器验证是否登录以及权限
         return iCategoryService.selectCategoryAndChildrenById(categoryId);
     }

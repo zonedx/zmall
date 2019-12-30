@@ -4,6 +4,7 @@ import com.zmall.common.Const;
 import com.zmall.common.ServerResponse;
 import com.zmall.pojo.User;
 import com.zmall.service.IUserService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpSession;
  * @Author duanxin
  **/
 
+@Api(tags = "uer-manager")
 @Controller
 @RequestMapping("/manager/user/")
 public class UserManagerController {

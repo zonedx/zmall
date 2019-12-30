@@ -16,7 +16,7 @@ import java.util.Properties;
  * @Author duanxin
  **/
 
-@Component
+//@Component
 //@PropertySource("classpath:application.yml")
 public class PropertiesUtil {
 

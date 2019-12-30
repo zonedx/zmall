@@ -3,6 +3,7 @@ package com.zmall.common;
 import com.zmall.config.MixPropertySourceFactory;
 import com.zmall.util.PropertiesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -36,10 +37,32 @@ public class RedisPool {
 
 
     public  void getIp(){
+
         String str = env.getRequiredProperty(testOnBorrow);
         String str1 = env.getRequiredProperty(maxTotal);
         System.out.println("+++++++++"+str);
         System.out.println("+++++++++"+str1);
+    }
+
+    @Bean
+    public JedisPoolConfig jedisPoolConfig(){
+        JedisPoolConfig config = new JedisPoolConfig();
+        config.setMaxTotal(Integer.parseInt(env.getRequiredProperty(maxTotal)));
+        config.setMaxIdle(Integer.parseInt(env.getRequiredProperty(maxIdle)));
+        config.setMinIdle(Integer.parseInt(env.getRequiredProperty(minIdle)));
+
+        config.setTestOnBorrow(Boolean.parseBoolean(env.getRequiredProperty(testOnBorrow)));
+        config.setTestOnReturn(Boolean.parseBoolean(env.getRequiredProperty(testOnReturn)));
+
+        config.setBlockWhenExhausted(true);
+
+        return config;
+    }
+
+    @Bean
+    public JedisPool jedisPool(){
+        pool = new JedisPool(jedisPoolConfig(),env.getRequiredProperty(redisIp), Integer.parseInt(env.getRequiredProperty(redisPort)),1000*2);
+        return pool;
     }
 //    private static void initPool(){
 //        JedisPoolConfig config = new JedisPoolConfig();
@@ -60,27 +83,17 @@ public class RedisPool {
 //        initPool();
 //    }
 //
-//    public static Jedis getJedis(){
-//        return pool.getResource();
-//    }
-//
-//    public static void returnResource(Jedis jedis){
-//        pool.returnResource(jedis);
-//    }
-//
-//    public static void returnBrokenResource(Jedis jedis){
-//        pool.returnBrokenResource(jedis);
-//    }
+    public static Jedis getJedis(){
+        return pool.getResource();
+    }
 
-//    public static void main(String[] args) {
-//        Jedis jedis = pool.getResource();
-//        jedis.set("zoneKey","zoneValue");
-//        String value = jedis.get("zoneKey");
-//        System.out.println("get value is:"+value);
-//        returnResource(jedis);
-//
-//        pool.destroy();//临时调用，销毁连接池中的所有连接
-//        System.out.println("Program is end ");
-//    }
+    public static void returnResource(Jedis jedis){
+        pool.returnResource(jedis);
+    }
+
+    public static void returnBrokenResource(Jedis jedis){
+        pool.returnBrokenResource(jedis);
+    }
+
 
 }

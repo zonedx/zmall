@@ -1,11 +1,13 @@
-package com.zmall.controller.common;
+package com.zmall.controller.common.interceptor;
 
 import com.zmall.common.LogicException;
+import com.zmall.controller.common.CurrentUser;
+import com.zmall.controller.common.Login;
+import com.zmall.controller.common.ResultCode;
 import com.zmall.pojo.User;
 import com.zmall.util.CookieUtil;
 import com.zmall.util.JsonUtil;
 import com.zmall.util.RedisPoolUtil;
-import com.zmall.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;

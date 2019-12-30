@@ -1,6 +1,6 @@
 package com.zmall.config;
 
-import com.zmall.controller.common.LoginResolver;
+import com.zmall.controller.common.interceptor.LoginResolver;
 import com.zmall.controller.common.interceptor.AuthorityInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

@@ -21,15 +21,19 @@ import java.util.Map;
 @Service("iShippingService")
 public class ShippingServiceImpl implements IShippingService {
 
-    @Autowired
     private ShippingMapper shippingMapper;
+
+    @Autowired
+    public ShippingServiceImpl(ShippingMapper shippingMapper) {
+        this.shippingMapper = shippingMapper;
+    }
 
     @Override
     public ServerResponse add(Integer userId,Shipping shipping){
         shipping.setUserId(userId);
         int rowCount = shippingMapper.insert(shipping);
         if (rowCount > 0){
-            Map result = Maps.newHashMap();
+            Map<String,Integer> result = Maps.newHashMap();
             result.put("shippingId",shipping.getId());
             return ServerResponse.createBySuccess("创建地址成功",result);
         }
@@ -65,6 +69,7 @@ public class ShippingServiceImpl implements IShippingService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ServerResponse<PageInfo> list(Integer userId, int pageNum,int pageSize){
         PageHelper.startPage(pageNum,pageSize);
         List<Shipping> shippingList = shippingMapper.selectByUserId(userId);

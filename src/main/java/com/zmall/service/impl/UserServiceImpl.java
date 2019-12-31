@@ -8,25 +8,26 @@ import com.zmall.service.IUserService;
 import com.zmall.util.MD5Util;
 import com.zmall.util.RedisPoolUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 /**
- * @ClassName: UserSereviceImpl
+ * @ClassName: UserServiceImpl
  * @Date 2019-09-15 02:00
  * @Author duanxin
  **/
 @Service("iUserService")
-public class UserSereviceImpl implements IUserService {
+public class UserServiceImpl implements IUserService {
+
+
+    private UserMapper userMapper;
 
     @Autowired
-    UserMapper userMapper;
-
-    private static Logger logger = LoggerFactory.getLogger(UserSereviceImpl.class);
+    public UserServiceImpl(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
 
     @Override
     public ServerResponse<User> login(String username, String password) {
@@ -49,12 +50,10 @@ public class UserSereviceImpl implements IUserService {
     /**
      * 用户注册
      *
-     * @param user
-     * @return
      */
     @Override
     public ServerResponse<String> register(User user) {
-        ServerResponse validResponse = this.checkValid(user.getUsername(), Const.USERNAME);
+        ServerResponse<String> validResponse = this.checkValid(user.getUsername(), Const.USERNAME);
         if (!validResponse.isSuccess()) {
             return validResponse;
         }
@@ -77,9 +76,8 @@ public class UserSereviceImpl implements IUserService {
      * 校验用户名和邮箱是否存在
      * isSuccess()表示校验通过（用户名或密码不存在）
      *
-     * @param str
-     * @param type
-     * @return
+     * @param str 待校验字段
+     * @param type 类型（用户名|邮箱）
      */
     @Override
     public ServerResponse<String> checkValid(String str, String type) {
@@ -125,7 +123,6 @@ public class UserSereviceImpl implements IUserService {
             //说明问题及问题的答案是这个用户的，并且是正确的
             String forgetToken = UUID.randomUUID().toString();
             RedisPoolUtil.setEx(Const.TOKEN_PREFIX + username, forgetToken, 60 * 60 * 12);
-            //TokenCache.setKey(TokenCache.TOKEN_PREFIX + username, forgetToken);
             return ServerResponse.createBySuccess(forgetToken);
         }
         return ServerResponse.createByErrorMessage("问题的答案错误");
@@ -142,7 +139,6 @@ public class UserSereviceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("用户不存在");
         }
 
-        //String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);
         String token = RedisPoolUtil.get(Const.TOKEN_PREFIX + username);
         if (StringUtils.isBlank(token)) {
             return ServerResponse.createByErrorMessage("token无效或者过期");
@@ -213,13 +209,10 @@ public class UserSereviceImpl implements IUserService {
 
     /**
      * backend
-     *
-     * @param user
-     * @return
      */
     @Override
     public ServerResponse checkAdminRole(User user) {
-        if (user != null && user.getRole().intValue() == Const.Role.ROLE_ADMIN) {
+        if (user != null && user.getRole() == Const.Role.ROLE_ADMIN) {
             return ServerResponse.createBySuccess();
         }
         return ServerResponse.createByError();

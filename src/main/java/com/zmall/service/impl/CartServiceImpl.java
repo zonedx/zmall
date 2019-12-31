@@ -30,11 +30,15 @@ import java.util.List;
 public class CartServiceImpl implements ICartService {
 
 
-    @Autowired
     private CartMapper cartMapper;
 
-    @Autowired
     private ProductMapper productMapper;
+
+    @Autowired
+    public CartServiceImpl(CartMapper cartMapper, ProductMapper productMapper) {
+        this.cartMapper = cartMapper;
+        this.productMapper = productMapper;
+    }
 
     @Override
     public ServerResponse<CartVo> add(Integer userId, Integer productId, Integer count) {
@@ -74,6 +78,7 @@ public class CartServiceImpl implements ICartService {
     }
 
     @Override
+    @SuppressWarnings("UnstableApiUsage")
     public ServerResponse<CartVo> deleteProduct(Integer userId, String productIds) {
         List<String> productList = Splitter.on(",").splitToList(productIds);
 
@@ -129,7 +134,7 @@ public class CartServiceImpl implements ICartService {
                     cartProductVo.setProductPrice(product.getPrice());
                     cartProductVo.setProductStock(product.getStock());
                     //判断库存
-                    int buyLimitCount = 0;
+                    int buyLimitCount;
                     if (product.getStock() >= cartItem.getQuantity()) {
                         //库存充足
                         buyLimitCount = cartItem.getQuantity();

@@ -3,9 +3,11 @@ package com.zmall.dao;
 import com.zmall.pojo.Cart;
 import com.zmall.pojo.CartExample;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface CartMapper {
     int deleteByExample(CartExample example);
 

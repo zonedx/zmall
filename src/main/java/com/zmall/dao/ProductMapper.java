@@ -3,9 +3,11 @@ package com.zmall.dao;
 import com.zmall.pojo.Product;
 import com.zmall.pojo.ProductExample;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface ProductMapper {
     int deleteByExample(ProductExample example);
 

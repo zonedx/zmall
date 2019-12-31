@@ -35,16 +35,18 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements IProductService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
-
-    @Autowired
     private ProductMapper productMapper;
 
-    @Autowired
     private CategoryMapper categoryMapper;
 
-    @Autowired
     private ICategoryService iCategoryService;
+
+    @Autowired
+    public ProductServiceImpl(ProductMapper productMapper, CategoryMapper categoryMapper, ICategoryService iCategoryService) {
+        this.productMapper = productMapper;
+        this.categoryMapper = categoryMapper;
+        this.iCategoryService = iCategoryService;
+    }
 
     @Override
     public ServerResponse saveOrUpdateProduct(Product product) {
@@ -136,6 +138,7 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ServerResponse<PageInfo> getProductList(int pageNum, int pageSize) {
         //startPage--start
         //填充自己的sql查询逻辑
@@ -166,10 +169,11 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ServerResponse<PageInfo> searchProduct(String productName, Integer productId, int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         if (StringUtils.isNotBlank(productName)) {
-            productName = new StringBuilder().append("%").append(productName).append("%").toString();
+            productName = "%" + productName + "%";
         }
 
         List<ProductListVo> productListVos = Lists.newArrayList();
@@ -201,11 +205,12 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ServerResponse<PageInfo> getProductByKeywordCategory(String keyword, Integer categoryId, int pageNum, int pageSize, String orderBy) {
         if (StringUtils.isBlank(keyword) && categoryId == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
-        List<Integer> categoryIdList = new ArrayList<Integer>();
+        List<Integer> categoryIdList = new ArrayList<>();
         if (categoryId != null) {
             Category category = categoryMapper.selectByPrimaryKey(categoryId);
             if (category == null && StringUtils.isBlank(keyword)) {
@@ -215,11 +220,12 @@ public class ProductServiceImpl implements IProductService {
                 PageInfo pageInfo = new PageInfo(list);
                 return ServerResponse.createBySuccess(pageInfo);
             }
+            assert category != null;
             categoryIdList = iCategoryService.selectCategoryAndChildrenById(category.getId()).getData();
         }
 
         if (StringUtils.isNotBlank(keyword)) {
-            keyword = new StringBuilder().append("%").append(keyword).append("%").toString();
+            keyword = "%" + keyword + "%";
         }
 
         PageHelper.startPage(pageNum, pageSize);

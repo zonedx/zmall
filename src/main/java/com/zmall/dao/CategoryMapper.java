@@ -2,9 +2,11 @@ package com.zmall.dao;
 
 import com.zmall.pojo.Category;
 import com.zmall.pojo.CategoryExample;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface CategoryMapper {
     int deleteByExample(CategoryExample example);
 

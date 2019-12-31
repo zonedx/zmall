@@ -3,7 +3,9 @@ package com.zmall.dao;
 import com.zmall.pojo.User;
 import com.zmall.pojo.UserExample;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface UserMapper {
     int deleteByExample(UserExample example);
 

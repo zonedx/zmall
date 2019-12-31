@@ -3,9 +3,11 @@ package com.zmall.dao;
 import com.zmall.pojo.Order;
 import com.zmall.pojo.OrderExample;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface OrderMapper {
     int deleteByExample(OrderExample example);
 

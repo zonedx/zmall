@@ -3,9 +3,11 @@ package com.zmall.dao;
 import com.zmall.pojo.Shipping;
 import com.zmall.pojo.ShippingExample;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface ShippingMapper {
     int deleteByExample(ShippingExample example);
 

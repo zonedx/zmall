@@ -2,7 +2,9 @@ package com.zmall.dao;
 
 import com.zmall.pojo.PayInfo;
 import com.zmall.pojo.PayInfoExample;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface PayInfoMapper {
     int deleteByExample(PayInfoExample example);
 

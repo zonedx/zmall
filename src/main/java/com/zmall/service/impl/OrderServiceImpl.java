@@ -27,12 +27,10 @@ import com.zmall.vo.OrderItemVo;
 import com.zmall.vo.OrderProductVo;
 import com.zmall.vo.OrderVo;
 import com.zmall.vo.ShippingVo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.aspectj.weaver.ast.Or;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,31 +45,34 @@ import java.util.*;
  * @Author duanxin
  **/
 @Service("iOrderService")
+@Slf4j
 public class OrderServiceImpl implements IOrderService {
 
-    private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
-
-
-    @Autowired
     private OrderMapper orderMapper;
 
-    @Autowired
     private OrderItemMapper orderItemMapper;
 
-    @Autowired
     private PayInfoMapper payInfoMapper;
 
-    @Autowired
     private CartMapper cartMapper;
 
-    @Autowired
     private ProductMapper productMapper;
 
-    @Autowired
     private ShippingMapper shippingMapper;
+
+    @Autowired
+    public OrderServiceImpl(OrderMapper orderMapper, OrderItemMapper orderItemMapper, PayInfoMapper payInfoMapper, CartMapper cartMapper, ProductMapper productMapper, ShippingMapper shippingMapper) {
+        this.orderMapper = orderMapper;
+        this.orderItemMapper = orderItemMapper;
+        this.payInfoMapper = payInfoMapper;
+        this.cartMapper = cartMapper;
+        this.productMapper = productMapper;
+        this.shippingMapper = shippingMapper;
+    }
 
 
     @Override
+    @SuppressWarnings("unchecked")
     public ServerResponse create(Integer userId, Integer shippingId) {
 
         //从购物车中获取数据
@@ -132,6 +133,7 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ServerResponse getOrderCartProduct(Integer userId) {
         OrderProductVo orderProductVo = new OrderProductVo();
 
@@ -168,6 +170,7 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ServerResponse<PageInfo> getOrderList(Integer userId, int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<Order> orderList = orderMapper.selectByUserId(userId);
@@ -181,7 +184,7 @@ public class OrderServiceImpl implements IOrderService {
     private List<OrderVo> assembleOrderVoList(List<Order> orderList, Integer userId) {
         List<OrderVo> orderVoList = Lists.newArrayList();
         for (Order order : orderList) {
-            List<OrderItem> orderItemList = Lists.newArrayList();
+            List<OrderItem> orderItemList;
             if (userId == null) {
                 //todo 管理员查询的时候不需要传userId
                 orderItemList = orderItemMapper.getByOrderNo(order.getOrderNo());
@@ -226,7 +229,7 @@ public class OrderServiceImpl implements IOrderService {
         return orderVo;
     }
 
-    public OrderItemVo assembleOrderItemVo(OrderItem orderItem) {
+    private OrderItemVo assembleOrderItemVo(OrderItem orderItem) {
         OrderItemVo orderItemVo = new OrderItemVo();
         orderItemVo.setOrderNo(orderItem.getOrderNo());
         orderItemVo.setProductId(orderItem.getProductId());
@@ -351,7 +354,7 @@ public class OrderServiceImpl implements IOrderService {
         String outTradeNo = order.getOrderNo().toString();
 
         // (必填) 订单标题，粗略描述用户的支付目的。如“xxx品牌xxx门店当面付扫码消费”
-        String subject = new StringBuilder().append("happy mmall扫码支付，订单号：").append(outTradeNo).toString();
+        String subject = "happy mmall扫码支付，订单号：" + outTradeNo;
 
         // (必填) 订单总金额，单位为元，不能超过1亿元
         // 如果同时传入了【打折金额】,【不可打折金额】,【订单总金额】三者,则必须满足如下条件:【订单总金额】=【打折金额】+【不可打折金额】
@@ -366,7 +369,7 @@ public class OrderServiceImpl implements IOrderService {
         String sellerId = "";
 
         // 订单描述，可以对交易或商品进行一个详细地描述，比如填写"购买商品2件共15.00元"
-        String body = new StringBuilder().append("订单").append(outTradeNo).append("购买商品共：").append(totalAmount).append("元").toString();
+        String body = "订单" + outTradeNo + "购买商品共：" + totalAmount + "元";
 
         // 商户操作员编号，添加此参数可以为商户操作员做销售统计
         String operatorId = "test_operator_id";
@@ -382,12 +385,12 @@ public class OrderServiceImpl implements IOrderService {
         String timeoutExpress = "120m";
 
         // 商品明细列表，需填写购买商品详细信息，
-        List<GoodsDetail> goodsDetailList = new ArrayList<GoodsDetail>();
+        List<GoodsDetail> goodsDetailList = new ArrayList<>();
 
         List<OrderItem> orderItemList = orderItemMapper.getByOrderNoUserId(orderNo, userId);
         for (OrderItem orderItem : orderItemList) {
             GoodsDetail goods = GoodsDetail.newInstance(orderItem.getId().toString(), orderItem.getProductName(),
-                    BigDecimalUtil.mul(orderItem.getCurrentUnitPrice().doubleValue(), new Double(100).doubleValue()).longValue(),
+                    BigDecimalUtil.mul(orderItem.getCurrentUnitPrice().doubleValue(), 100d).longValue(),
                     orderItem.getQuantity());
             goodsDetailList.add(goods);
 
@@ -402,29 +405,34 @@ public class OrderServiceImpl implements IOrderService {
                 .setNotifyUrl(PropertiesUtil.getProperty("alipay.callback.url"))//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
                 .setGoodsDetailList(goodsDetailList);
 
-        /** 一定要在创建AlipayTradeService之前调用Configs.init()设置默认参数
-         *  Configs会读取classpath下的zfbinfo.properties文件配置信息，如果找不到该文件则确认该文件是否在classpath目录
-         */
+
+//        一定要在创建AlipayTradeService之前调用Configs.init()设置默认参数
+//        Configs会读取classpath下的zfbinfo.properties文件配置信息，如果找不到该文件则确认该文件是否在classpath目录
         Configs.init("zfbinfo.properties");
 
-        /** 使用Configs提供的默认参数
-         *  AlipayTradeService可以使用单例或者为静态成员对象，不需要反复new
-         */
+//        /** 使用Configs提供的默认参数
+//         *  AlipayTradeService可以使用单例或者为静态成员对象，不需要反复new
+//         */
         // 支付宝当面付2.0服务
         AlipayTradeService tradeService = new AlipayTradeServiceImpl.ClientBuilder().build();
 
         AlipayF2FPrecreateResult result = tradeService.tradePrecreate(builder);
         switch (result.getTradeStatus()) {
             case SUCCESS:
-                logger.info("支付宝预下单成功: )");
+                log.info("支付宝预下单成功: )");
 
                 AlipayTradePrecreateResponse response = result.getResponse();
                 dumpResponse(response);
 
                 File folder = new File(path);
                 if (!folder.exists()) {
-                    folder.setWritable(true);
-                    folder.mkdirs();
+                    boolean isSuccess = folder.setWritable(true);
+                    if (!isSuccess) {
+                        log.info("{} set writable error！", folder);
+                        throw new RuntimeException("设置文件权限失败！");
+                    }
+                    isSuccess = folder.mkdirs();
+                    log.info("{} mkdirs result: ", isSuccess);
                 }
                 // 需要修改为运行机器上的路径
                 //细节！！！ "/qr-%s.png"
@@ -436,20 +444,20 @@ public class OrderServiceImpl implements IOrderService {
                 try {
                     FTPUtil.uploadFile(Lists.newArrayList(targetFile));
                 } catch (IOException e) {
-                    logger.error("上传二维码异常", e);
+                    log.error("上传二维码异常", e);
                 }
-                logger.info("filePath:" + qrPath);
+                log.info("filePath:" + qrPath);
                 String qrUrl = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFile.getName();
                 resultMap.put("qrUrl", qrUrl);
                 return ServerResponse.createBySuccess(resultMap);
             case FAILED:
-                logger.error("支付宝预下单失败!!!");
+                log.error("支付宝预下单失败!!!");
                 return ServerResponse.createByErrorMessage("支付宝预下单失败!!!");
             case UNKNOWN:
-                logger.error("系统异常，预下单状态未知!!!");
+                log.error("系统异常，预下单状态未知!!!");
                 return ServerResponse.createByErrorMessage("系统异常，预下单状态未知!!!");
             default:
-                logger.error("不支持的交易状态，交易返回异常!!!");
+                log.error("不支持的交易状态，交易返回异常!!!");
                 return ServerResponse.createByErrorMessage("不支持的交易状态，交易返回异常!!!");
         }
 
@@ -458,12 +466,12 @@ public class OrderServiceImpl implements IOrderService {
     // 简单打印应答
     private void dumpResponse(AlipayResponse response) {
         if (response != null) {
-            logger.info(String.format("code:%s, msg:%s", response.getCode(), response.getMsg()));
+            log.info(String.format("code:%s, msg:%s", response.getCode(), response.getMsg()));
             if (StringUtils.isNotEmpty(response.getSubCode())) {
-                logger.info(String.format("subCode:%s, subMsg:%s", response.getSubCode(),
+                log.info(String.format("subCode:%s, subMsg:%s", response.getSubCode(),
                         response.getSubMsg()));
             }
-            logger.info("body:" + response.getBody());
+            log.info("body:" + response.getBody());
         }
     }
 
@@ -514,6 +522,7 @@ public class OrderServiceImpl implements IOrderService {
     //backend
 
     @Override
+    @SuppressWarnings("unchecked")
     public ServerResponse<PageInfo> manageList(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<Order> orderList = orderMapper.selectAllOrder();
@@ -536,6 +545,7 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ServerResponse<PageInfo> manageSearch(Long orderNo, int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         Order order = orderMapper.selectByOrderNo(orderNo);
@@ -569,16 +579,16 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public void closeOrder(int hour) {
         Date closeDate = DateUtils.addHours(new Date(), -hour);
-        List<Order> orderList = orderMapper.selectOrderStatusByCreateTime(Const.OrderStatusEnum.NO_PAY.getCode(),DateTimeUtil.dateToStr(closeDate));
-        for (Order order : orderList){
+        List<Order> orderList = orderMapper.selectOrderStatusByCreateTime(Const.OrderStatusEnum.NO_PAY.getCode(), DateTimeUtil.dateToStr(closeDate));
+        for (Order order : orderList) {
             List<OrderItem> orderItemList = orderItemMapper.getByOrderNo(order.getOrderNo());
-            for (OrderItem orderItem : orderItemList){
+            for (OrderItem orderItem : orderItemList) {
 
                 //一定要用主键where条件，防止锁表。同时是必须支mysql的InnoDB
                 Integer stock = productMapper.selectStockByProductId(orderItem.getProductId());
 
                 //考虑到已生成的订单里的商品，被删除的情况
-                if (stock == null){
+                if (stock == null) {
                     continue;
                 }
 
@@ -589,7 +599,7 @@ public class OrderServiceImpl implements IOrderService {
             }
 
             orderMapper.closeOrderByOrderId(order.getId());
-            logger.info("关闭订单OrderNo:{}",order.getOrderNo());
+            log.info("关闭订单OrderNo:{}", order.getOrderNo());
         }
     }
 

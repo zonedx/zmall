@@ -4,9 +4,9 @@ import com.google.common.collect.Maps;
 import com.zmall.common.Const;
 import com.zmall.common.ServerResponse;
 import com.zmall.pojo.User;
-import com.zmall.util.CookieUtil;
-import com.zmall.util.JsonUtil;
-import com.zmall.util.RedisPoolUtil;
+import com.zmall.util.CookieUtils;
+import com.zmall.util.JsonUtils;
+import com.zmall.util.RedisPoolUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -67,10 +67,10 @@ public class AuthorityInterceptor extends HandlerInterceptorAdapter {
         log.info("拦截器拦截到请求，className:{},methodName:{},param:{}",className,methodName,builder.toString());
 
         User user = null;
-        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        String loginToken = CookieUtils.readLoginToken(httpServletRequest);
         if (StringUtils.isNotEmpty(loginToken)){
-            String userJsonStr = RedisPoolUtil.get(loginToken);
-            user = JsonUtil.string2Obj(userJsonStr,User.class);
+            String userJsonStr = RedisPoolUtils.get(loginToken);
+            user = JsonUtils.string2Obj(userJsonStr,User.class);
         }
 
         if (user == null || (user.getRole() != Const.Role.ROLE_ADMIN)){
@@ -92,18 +92,18 @@ public class AuthorityInterceptor extends HandlerInterceptorAdapter {
                     Map<String,String> resultMap = Maps.newHashMap();
                     resultMap.put("success","false");
                     resultMap.put("msg","请登录管理员");
-                    out.print(JsonUtil.obj2String(resultMap));
+                    out.print(JsonUtils.obj2String(resultMap));
                 }else {
-                    out.print(JsonUtil.obj2String(ServerResponse.createByErrorMessage("拦截器拦截，用户未登录")));
+                    out.print(JsonUtils.obj2String(ServerResponse.createByErrorMessage("拦截器拦截，用户未登录")));
                 }
             }else {
                 if (StringUtils.equals(className,"ProductManageController") && StringUtils.equals(methodName,"richtextImgUpload")){
                     Map<String,String> resultMap = Maps.newHashMap();
                     resultMap.put("success","false");
                     resultMap.put("msg","无权限操作");
-                    out.print(JsonUtil.obj2String(resultMap));
+                    out.print(JsonUtils.obj2String(resultMap));
                 }else {
-                    out.print(JsonUtil.obj2String(ServerResponse.createByErrorMessage("拦截器拦截，用户无权限操作")));
+                    out.print(JsonUtils.obj2String(ServerResponse.createByErrorMessage("拦截器拦截，用户无权限操作")));
                 }
             }
             out.flush();
@@ -116,12 +116,12 @@ public class AuthorityInterceptor extends HandlerInterceptorAdapter {
     }
 
     @Override
-    public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
+    public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) {
         log.info("postHandle*********");
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) throws Exception {
+    public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) {
         log.info("afterCompletion*********");
     }
 }

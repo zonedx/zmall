@@ -10,21 +10,21 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * @ClassName: FTPUtil
+ * @ClassName: FTPUtils
  * @Date 2019-09-16 21:35
  * @Author duanxin
  **/
-public class FTPUtil {
+public class FTPUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(FTPUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(FTPUtils.class);
 
-    private static String ftpIp = PropertiesUtil.getProperty("ftp.server.ip");
+    private static String ftpIp = PropertiesUtils.getProperty("ftp.server.ip");
 
-    private static String ftpUser = PropertiesUtil.getProperty("ftp.user");
+    private static String ftpUser = PropertiesUtils.getProperty("ftp.user");
 
-    private static String ftpPass = PropertiesUtil.getProperty("ftp.pass");
+    private static String ftpPass = PropertiesUtils.getProperty("ftp.pass");
 
-    public FTPUtil(String ip, int port, String user, String pwd) {
+    private FTPUtils(String ip, int port, String user, String pwd) {
         this.ip = ip;
         this.port = port;
         this.user = user;
@@ -32,9 +32,9 @@ public class FTPUtil {
     }
 
     public static boolean uploadFile(List<File> fileList) throws IOException {
-        FTPUtil ftpUtil = new FTPUtil(ftpIp, 21, ftpUser, ftpPass);
+        FTPUtils ftpUtils = new FTPUtils(ftpIp, 21, ftpUser, ftpPass);
         logger.info("开始连接ftp服务器");
-        boolean result = ftpUtil.uploadFile("img",fileList);
+        boolean result = ftpUtils.uploadFile("img",fileList);
         logger.info("结束上传，上传结果：{}",result);
         return result;
     }

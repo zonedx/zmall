@@ -16,13 +16,13 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
- * @ClassName: JsonUtil
+ * @ClassName: JsonUtils
  * @Date 2019-10-08 17:03
  * @Author duanxin
  **/
 
 @Slf4j
-public class JsonUtil {
+public class JsonUtils {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
@@ -35,7 +35,7 @@ public class JsonUtil {
         //忽略空bean转json的错误
         objectMapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
         //所有的日期格式统一为以下格式，即yyyy-MM-dd HH:mm:ss
-        objectMapper.setDateFormat(new SimpleDateFormat(DateTimeUtil.STANDARD_FORMAT));
+        objectMapper.setDateFormat(new SimpleDateFormat(DateTimeUtils.getStandardFormat()));
 
         //忽略在json字符串中存在，但是在java对象中不存在对应属性的情况。防止错误
         objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -53,7 +53,7 @@ public class JsonUtil {
         }
     }
 
-    public static <T> String obj2StringPretty(T obj) {
+    private static <T> String obj2StringPretty(T obj) {
         if (obj == null) {
             return null;
         }
@@ -66,6 +66,7 @@ public class JsonUtil {
     }
 
 
+    @SuppressWarnings("unchecked")
     public static <T> T string2Obj(String str, Class<T> clazz) {
         if (StringUtils.isEmpty(str) || clazz == null) {
             return null;
@@ -78,7 +79,8 @@ public class JsonUtil {
         }
     }
 
-    public static <T> T string2Obj(String str, TypeReference<T> typeReference) {
+    @SuppressWarnings("unchecked")
+    private static <T> T string2Obj(String str, TypeReference<T> typeReference) {
         if (StringUtils.isEmpty(str) || typeReference == null) {
             return null;
         }
@@ -90,7 +92,7 @@ public class JsonUtil {
         }
     }
 
-    public static <T> T string2Obj(String str, Class<?> collectionClass,Class<?>... elementClasses) {
+    private static <T> T string2Obj(String str, Class<?> collectionClass, Class<?>... elementClasses) {
         JavaType javaType = objectMapper.getTypeFactory().constructParametricType(collectionClass,elementClasses);
         try {
             return objectMapper.readValue(str,javaType);
@@ -111,8 +113,8 @@ public class JsonUtil {
         user2.setUsername("zone2");
         user2.setEmail("1234562@163.com");
 
-        String userJson = JsonUtil.obj2String(user);
-        String userJsonPretty = JsonUtil.obj2StringPretty(user);
+        String userJson = JsonUtils.obj2String(user);
+        String userJsonPretty = JsonUtils.obj2StringPretty(user);
 
         log.info(userJson);
         log.info(userJsonPretty);
@@ -121,16 +123,16 @@ public class JsonUtil {
         userList.add(user);
         userList.add(user2);
 
-        String userListString = JsonUtil.obj2StringPretty(userList);
+        String userListString = JsonUtils.obj2StringPretty(userList);
         log.info("=========");
         log.info(userListString);
         log.info("=========");
         //此处为大坑  泛型是List的时候 反序列化后list中的对象变成了LinkedList，导致没有对应对象的getXXX()方法了
         //List<User> userList1 = JsonUtil.string2Obj(userListString, List.class);
-        List<User> userList1 = JsonUtil.string2Obj(userListString, new TypeReference<List<User>>() {
+        List<User> userList1 = JsonUtils.string2Obj(userListString, new TypeReference<List<User>>() {
         });
 
-        List<User> userList2 = JsonUtil.string2Obj(userListString,List.class,User.class);
+        List<User> userList2 = JsonUtils.string2Obj(userListString,List.class,User.class);
         assert userList1 != null;
         log.info(userList1.toString());
         assert userList2 != null;

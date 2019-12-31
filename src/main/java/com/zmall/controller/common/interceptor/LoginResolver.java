@@ -5,9 +5,9 @@ import com.zmall.controller.common.CurrentUser;
 import com.zmall.controller.common.Login;
 import com.zmall.controller.common.ResultCode;
 import com.zmall.pojo.User;
-import com.zmall.util.CookieUtil;
-import com.zmall.util.JsonUtil;
-import com.zmall.util.RedisPoolUtil;
+import com.zmall.util.CookieUtils;
+import com.zmall.util.JsonUtils;
+import com.zmall.util.RedisPoolUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -34,7 +34,7 @@ public class LoginResolver extends HandlerInterceptorAdapter implements HandlerM
     private final ThreadLocal<User> userThreadLocal = new ThreadLocal<>();
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (handler instanceof HandlerMethod) {
             HandlerMethod method = (HandlerMethod) handler;
             Login login;
@@ -58,17 +58,17 @@ public class LoginResolver extends HandlerInterceptorAdapter implements HandlerM
     }
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
         userThreadLocal.remove();
     }
 
     private User getUser(HttpServletRequest request) {
-        String loginToken = CookieUtil.readLoginToken(request);
+        String loginToken = CookieUtils.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return null;
         }
-        String userJsonStr = RedisPoolUtil.get(loginToken);
-        return JsonUtil.string2Obj(userJsonStr, User.class);
+        String userJsonStr = RedisPoolUtils.get(loginToken);
+        return JsonUtils.string2Obj(userJsonStr, User.class);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class LoginResolver extends HandlerInterceptorAdapter implements HandlerM
     }
 
     @Override
-    public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) throws Exception {
+    public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) {
         return userThreadLocal.get();
     }
 }

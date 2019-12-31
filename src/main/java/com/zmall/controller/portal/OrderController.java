@@ -5,25 +5,17 @@ import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.demo.trade.config.Configs;
 import com.google.common.collect.Maps;
 import com.zmall.common.Const;
-import com.zmall.common.ResponseCode;
 import com.zmall.common.ServerResponse;
 import com.zmall.controller.common.CurrentUser;
 import com.zmall.controller.common.Login;
 import com.zmall.pojo.User;
 import com.zmall.service.IOrderService;
-import com.zmall.util.CookieUtil;
-import com.zmall.util.JsonUtil;
-import com.zmall.util.RedisPoolUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -119,14 +111,14 @@ public class OrderController {
         Map<String, String> params = Maps.newHashMap();
 
         Map requestParams = request.getParameterMap();
-        for (Iterator iterator = requestParams.keySet().iterator(); iterator.hasNext(); ) {
-            String name = (String) iterator.next();
+        for (Object o : requestParams.keySet()) {
+            String name = (String) o;
             String[] values = (String[]) requestParams.get(name);
-            String valueStr = "";
-            for (int i = 0; i < values.length; i++) {
-                valueStr = (i == values.length) ? valueStr + values[i] : valueStr + values[i] + ",";
+            StringBuilder valueStr = new StringBuilder();
+            for (String value : values) {
+                valueStr.append(value).append(",");
             }
-            params.put(name, valueStr);
+            params.put(name, valueStr.toString());
         }
         log.info("支付宝回调，sign{},trade_status{},参数:{}", params.get("sign"), params.get("trade_status"), params.toString());
 

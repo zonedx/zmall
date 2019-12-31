@@ -5,7 +5,7 @@ import com.zmall.common.ServerResponse;
 import com.zmall.pojo.Product;
 import com.zmall.service.IFileService;
 import com.zmall.service.IProductService;
-import com.zmall.util.PropertiesUtil;
+import com.zmall.util.PropertiesUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -45,8 +45,6 @@ public class ProductManagerController {
 
     /**
      * 上架新产品
-     * @param product
-     * @return
      */
     @ApiOperation(value = "上架新产品")
     @ApiImplicitParams({
@@ -60,9 +58,6 @@ public class ProductManagerController {
 
     /**
      * 设置产品状态（在售：1|下架：0）
-     * @param productId
-     * @param status
-     * @return
      */
     @ApiOperation(value = "设置产品状态（在售：1|下架：0）")
     @ApiImplicitParams({
@@ -78,8 +73,6 @@ public class ProductManagerController {
 
     /**
      * 查看产品详情
-     * @param productId
-     * @return
      */
     @ApiOperation(value = "查看产品详情")
     @ApiImplicitParams({
@@ -93,9 +86,6 @@ public class ProductManagerController {
 
     /**
      * 分页查询产品列表
-     * @param pageNum
-     * @param pageSize
-     * @return
      */
     @ApiOperation(value = "产品列表")
     @ApiImplicitParams({
@@ -130,9 +120,9 @@ public class ProductManagerController {
         //全部通过拦截器验证是否登录以及权限
         String path = request.getSession().getServletContext().getRealPath("upload");
         String targetFileName = iFileService.upload(file,path);
-        String url = PropertiesUtil.getProperty("ftp.server.http.prefix")+targetFileName;
+        String url = PropertiesUtils.getProperty("ftp.server.http.prefix")+targetFileName;
 
-        Map fileMap = Maps.newHashMap();
+        Map<String,String> fileMap = Maps.newHashMap();
         fileMap.put("uri",targetFileName);
         fileMap.put("url",url);
         return ServerResponse.createBySuccess(fileMap);
@@ -141,18 +131,18 @@ public class ProductManagerController {
     @ApiOperation(value = "更新产品，可上传富文本")
     @RequestMapping("richtext_img_upload.do")
     public Map richtextImgUpload(@RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response){
-        Map resultMap = Maps.newHashMap();
+        Map<String,String> resultMap = Maps.newHashMap();
         //全部通过拦截器验证是否登录以及权限
         String path = request.getSession().getServletContext().getRealPath("upload");
         String targetFileName = iFileService.upload(file,path);
         if(StringUtils.isBlank(targetFileName)){
-            resultMap.put("success",false);
+            resultMap.put("success","false");
             resultMap.put("msg","上传失败");
             return resultMap;
         }
 
-        String url = PropertiesUtil.getProperty("ftp.server.http.prefix")+targetFileName;
-        resultMap.put("success",true);
+        String url = PropertiesUtils.getProperty("ftp.server.http.prefix")+targetFileName;
+        resultMap.put("success","true");
         resultMap.put("msg","上传成功");
         resultMap.put("file_path",url);
 

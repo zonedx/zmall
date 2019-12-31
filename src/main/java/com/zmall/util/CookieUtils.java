@@ -8,12 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @ClassName: CookieUtil
+ * @ClassName: CookieUtils
  * @Date 2019-10-10 09:20
  * @Author duanxin
  **/
 @Slf4j
-public class CookieUtil {
+public class CookieUtils {
 
     private final static String COOKIE_DOMAIN = "dlzonemall.com";
     private final static String COOKIE_NAME = "zonemall_login_token";
@@ -23,7 +23,7 @@ public class CookieUtil {
         if (cks != null) {
             for (Cookie ck : cks) {
                 if (StringUtils.equals(ck.getName(), COOKIE_NAME)) {
-                    log.info("return cookieName:{},cookieValue:{}", ck.getName(), ck.getValue());
+                    log.info("read cookieName:{},cookieValue:{}", ck.getName(), ck.getValue());
                     return ck.getValue();
                 }
             }

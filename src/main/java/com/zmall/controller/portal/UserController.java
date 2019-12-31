@@ -6,9 +6,10 @@ import com.zmall.controller.common.CurrentUser;
 import com.zmall.controller.common.Login;
 import com.zmall.pojo.User;
 import com.zmall.service.IUserService;
-import com.zmall.util.CookieUtil;
-import com.zmall.util.JsonUtil;
-import com.zmall.util.RedisPoolUtil;
+import com.zmall.util.CookieUtils;
+import com.zmall.util.JsonUtils;
+import com.zmall.util.PropertiesUtils;
+import com.zmall.util.RedisPoolUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -41,11 +42,6 @@ public class UserController {
 
     /**
      * 用户登录
-     *
-     * @param username
-     * @param password
-     * @param session
-     * @return
      */
     @ApiOperation(value = "登录")
     @ApiImplicitParams({
@@ -54,29 +50,25 @@ public class UserController {
     })
     @RequestMapping(value = "login.do", method = RequestMethod.POST)
     public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse httpServletResponse) {
-
         ServerResponse<User> response = iUserService.login(username, password);
 
         if (response.isSuccess()) {
-            CookieUtil.writeLoginToken(httpServletResponse,session.getId());
-            RedisPoolUtil.setEx(session.getId(), JsonUtil.obj2String(response.getData()),Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
+            CookieUtils.writeLoginToken(httpServletResponse,session.getId());
+            RedisPoolUtils.setEx(session.getId(), JsonUtils.obj2String(response.getData()),Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
         }
         return response;
     }
 
     /**
      * 登出
-     * @param request
-     * @param response
-     * @return
      */
     @Login
     @ApiOperation(value = "登出")
     @RequestMapping(value = "logout.do", method = RequestMethod.POST)
     public ServerResponse<String> logout(HttpServletRequest request,HttpServletResponse response) {
-        String loginToken = CookieUtil.readLoginToken(request);
-        CookieUtil.delLoginToken(request,response);
-        RedisPoolUtil.del(loginToken);
+        String loginToken = CookieUtils.readLoginToken(request);
+        CookieUtils.delLoginToken(request,response);
+        RedisPoolUtils.del(loginToken);
         return ServerResponse.createBySuccess();
     }
 

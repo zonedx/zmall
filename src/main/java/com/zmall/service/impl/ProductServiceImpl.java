@@ -12,17 +12,14 @@ import com.zmall.pojo.Category;
 import com.zmall.pojo.Product;
 import com.zmall.service.ICategoryService;
 import com.zmall.service.IProductService;
-import com.zmall.util.DateTimeUtil;
-import com.zmall.util.PropertiesUtil;
+import com.zmall.util.DateTimeUtils;
+import com.zmall.util.PropertiesUtils;
 import com.zmall.vo.ProductDetailVo;
 import com.zmall.vo.ProductListVo;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,7 +118,7 @@ public class ProductServiceImpl implements IProductService {
         productDetailVo.setStock(product.getStock());
 
         //imageHost
-        productDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix", "ftp://127.0.0.1/"));
+        productDetailVo.setImageHost(PropertiesUtils.getProperty("ftp.server.http.prefix", "ftp://127.0.0.1/"));
         //parentCategoryId
         Category category = categoryMapper.selectByPrimaryKey(product.getCategoryId());
         if (category == null) {
@@ -131,9 +128,9 @@ public class ProductServiceImpl implements IProductService {
         }
 
         //createTime
-        productDetailVo.setCreateTime(DateTimeUtil.dateToStr(product.getCreateTime()));
+        productDetailVo.setCreateTime(DateTimeUtils.dateToStr(product.getCreateTime()));
         //updateTime
-        productDetailVo.setUpdateTime(DateTimeUtil.dateToStr(product.getUpdateTime()));
+        productDetailVo.setUpdateTime(DateTimeUtils.dateToStr(product.getUpdateTime()));
         return productDetailVo;
     }
 
@@ -160,7 +157,7 @@ public class ProductServiceImpl implements IProductService {
         productListVo.setId(product.getId());
         productListVo.setCategoryId(product.getCategoryId());
         productListVo.setName(product.getName());
-        productListVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix", "ftp://127.0.0.1/"));
+        productListVo.setImageHost(PropertiesUtils.getProperty("ftp.server.http.prefix", "ftp://127.0.0.1/"));
         productListVo.setMainImage(product.getMainImage());
         productListVo.setPrice(product.getPrice());
         productListVo.setSubtitle(product.getSubtitle());

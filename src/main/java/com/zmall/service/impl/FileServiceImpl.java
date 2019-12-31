@@ -2,7 +2,7 @@ package com.zmall.service.impl;
 
 import com.google.common.collect.Lists;
 import com.zmall.service.IFileService;
-import com.zmall.util.FTPUtil;
+import com.zmall.util.FTPUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,7 +48,7 @@ public class FileServiceImpl implements IFileService {
             file.transferTo(targetFile);
             //文件已经上传成功
 
-            FTPUtil.uploadFile(Lists.newArrayList(targetFile));
+            FTPUtils.uploadFile(Lists.newArrayList(targetFile));
             //已经将targetFIle上传到FTP服务器上
 
             //上传完之后，删除upload下面的文件

@@ -3,13 +3,13 @@ package com.zmall.util;
 import java.math.BigDecimal;
 
 /**
- * @ClassName: BigDecimalUtil
+ * @ClassName: BigDecimalUtils
  * @Date 2019-09-20 00:04
  * @Author duanxin
  **/
-public class BigDecimalUtil {
+public class BigDecimalUtils {
 
-    public BigDecimalUtil() {
+    public BigDecimalUtils() {
 
     }
 

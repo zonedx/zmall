@@ -8,19 +8,16 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ShardedJedis;
 
 /**
- * @ClassName: RedisPoolUtil
+ * @ClassName: RedisPoolUtils
  * @Date 2019-10-08 16:23
  * @Author duanxin
  **/
 
 @Slf4j
-public class RedisPoolUtil {
+public class RedisPoolUtils {
 
     /**
      * 设置key的有效期  单位是秒
-     * @param key
-     * @param exTime
-     * @return
      */
     public static Long expire(String key,int exTime){
         Jedis jedis = null;
@@ -121,7 +118,7 @@ public class RedisPoolUtil {
 
     public static String getSet(String key,String value){
         Jedis jedis = null;
-        String result = null;
+        String result;
 
         try {
             jedis = RedisPool.getJedis();
@@ -129,7 +126,7 @@ public class RedisPoolUtil {
         } catch (Exception e) {
             log.error("getSet key:{} value:{} error",key,value,e);
             RedisPool.returnBrokenResource(jedis);
-            return result;
+            return null;
         }
         RedisPool.returnResource(jedis);
         return result;

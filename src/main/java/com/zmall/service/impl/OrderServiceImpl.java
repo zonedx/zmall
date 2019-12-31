@@ -19,10 +19,10 @@ import com.zmall.common.ServerResponse;
 import com.zmall.dao.*;
 import com.zmall.pojo.*;
 import com.zmall.service.IOrderService;
-import com.zmall.util.BigDecimalUtil;
-import com.zmall.util.DateTimeUtil;
-import com.zmall.util.FTPUtil;
-import com.zmall.util.PropertiesUtil;
+import com.zmall.util.BigDecimalUtils;
+import com.zmall.util.DateTimeUtils;
+import com.zmall.util.FTPUtils;
+import com.zmall.util.PropertiesUtils;
 import com.zmall.vo.OrderItemVo;
 import com.zmall.vo.OrderProductVo;
 import com.zmall.vo.OrderVo;
@@ -149,12 +149,12 @@ public class OrderServiceImpl implements IOrderService {
 
         BigDecimal payment = new BigDecimal("0");
         for (OrderItem orderItem : orderItemList) {
-            payment = BigDecimalUtil.add(payment.doubleValue(), orderItem.getTotalPrice().doubleValue());
+            payment = BigDecimalUtils.add(payment.doubleValue(), orderItem.getTotalPrice().doubleValue());
             orderItemVoList.add(assembleOrderItemVo(orderItem));
         }
         orderProductVo.setProductTotalPrice(payment);
         orderProductVo.setOrderItemVoList(orderItemVoList);
-        orderProductVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
+        orderProductVo.setImageHost(PropertiesUtils.getProperty("ftp.server.http.prefix"));
         return ServerResponse.createBySuccess(orderProductVo);
     }
 
@@ -213,11 +213,11 @@ public class OrderServiceImpl implements IOrderService {
             orderVo.setReceiverName(shipping.getReceiverName());
             orderVo.setShippingVo(this.assembleShippingVo(shipping));
         }
-        orderVo.setPaymentTime(DateTimeUtil.dateToStr(order.getPaymentTime()));
-        orderVo.setSendTime(DateTimeUtil.dateToStr(order.getSendTime()));
-        orderVo.setCloseTime(DateTimeUtil.dateToStr(order.getCloseTime()));
-        orderVo.setCreateTime(DateTimeUtil.dateToStr(order.getCreateTime()));
-        orderVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
+        orderVo.setPaymentTime(DateTimeUtils.dateToStr(order.getPaymentTime()));
+        orderVo.setSendTime(DateTimeUtils.dateToStr(order.getSendTime()));
+        orderVo.setCloseTime(DateTimeUtils.dateToStr(order.getCloseTime()));
+        orderVo.setCreateTime(DateTimeUtils.dateToStr(order.getCreateTime()));
+        orderVo.setImageHost(PropertiesUtils.getProperty("ftp.server.http.prefix"));
 
         List<OrderItemVo> orderItemVos = Lists.newArrayList();
         for (OrderItem orderItem : orderItemList) {
@@ -237,7 +237,7 @@ public class OrderServiceImpl implements IOrderService {
         orderItemVo.setProductName(orderItem.getProductName());
         orderItemVo.setQuantity(orderItem.getQuantity());
         orderItemVo.setTotalPrice(orderItem.getTotalPrice());
-        orderItemVo.setCreateTime(DateTimeUtil.dateToStr(orderItem.getCreateTime()));
+        orderItemVo.setCreateTime(DateTimeUtils.dateToStr(orderItem.getCreateTime()));
 
         return orderItemVo;
     }
@@ -299,7 +299,7 @@ public class OrderServiceImpl implements IOrderService {
     private BigDecimal getOrderTotalPrice(List<OrderItem> orderItemList) {
         BigDecimal payment = new BigDecimal("0");
         for (OrderItem orderItem : orderItemList) {
-            payment = BigDecimalUtil.add(payment.doubleValue(), orderItem.getTotalPrice().doubleValue());
+            payment = BigDecimalUtils.add(payment.doubleValue(), orderItem.getTotalPrice().doubleValue());
         }
         return payment;
     }
@@ -329,7 +329,7 @@ public class OrderServiceImpl implements IOrderService {
             orderItem.setProductImage(product.getMainImage());
             orderItem.setCurrentUnitPrice(product.getPrice());
             orderItem.setQuantity(cartItem.getQuantity());
-            orderItem.setTotalPrice(BigDecimalUtil.mul(product.getPrice().doubleValue(), cartItem.getQuantity()));
+            orderItem.setTotalPrice(BigDecimalUtils.mul(product.getPrice().doubleValue(), cartItem.getQuantity()));
 
             orderItemList.add(orderItem);
         }
@@ -390,7 +390,7 @@ public class OrderServiceImpl implements IOrderService {
         List<OrderItem> orderItemList = orderItemMapper.getByOrderNoUserId(orderNo, userId);
         for (OrderItem orderItem : orderItemList) {
             GoodsDetail goods = GoodsDetail.newInstance(orderItem.getId().toString(), orderItem.getProductName(),
-                    BigDecimalUtil.mul(orderItem.getCurrentUnitPrice().doubleValue(), 100d).longValue(),
+                    BigDecimalUtils.mul(orderItem.getCurrentUnitPrice().doubleValue(), 100d).longValue(),
                     orderItem.getQuantity());
             goodsDetailList.add(goods);
 
@@ -402,7 +402,7 @@ public class OrderServiceImpl implements IOrderService {
                 .setUndiscountableAmount(undiscountableAmount).setSellerId(sellerId).setBody(body)
                 .setOperatorId(operatorId).setStoreId(storeId).setExtendParams(extendParams)
                 .setTimeoutExpress(timeoutExpress)
-                .setNotifyUrl(PropertiesUtil.getProperty("alipay.callback.url"))//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
+                .setNotifyUrl(PropertiesUtils.getProperty("alipay.callback.url"))//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
                 .setGoodsDetailList(goodsDetailList);
 
 
@@ -442,12 +442,12 @@ public class OrderServiceImpl implements IOrderService {
 
                 File targetFile = new File(path, qrFileName);
                 try {
-                    FTPUtil.uploadFile(Lists.newArrayList(targetFile));
+                    FTPUtils.uploadFile(Lists.newArrayList(targetFile));
                 } catch (IOException e) {
                     log.error("上传二维码异常", e);
                 }
                 log.info("filePath:" + qrPath);
-                String qrUrl = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFile.getName();
+                String qrUrl = PropertiesUtils.getProperty("ftp.server.http.prefix") + targetFile.getName();
                 resultMap.put("qrUrl", qrUrl);
                 return ServerResponse.createBySuccess(resultMap);
             case FAILED:
@@ -489,7 +489,7 @@ public class OrderServiceImpl implements IOrderService {
             return ServerResponse.createBySuccessMessage("支付宝重复调用");
         }
         if (Const.AlipayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
-            order.setPaymentTime(DateTimeUtil.strToDate(params.get("gmt_payment")));
+            order.setPaymentTime(DateTimeUtils.strToDate(params.get("gmt_payment")));
             order.setStatus(Const.OrderStatusEnum.PAID.getCode());
             orderMapper.updateByPrimaryKeySelective(order);
         }
@@ -579,7 +579,7 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public void closeOrder(int hour) {
         Date closeDate = DateUtils.addHours(new Date(), -hour);
-        List<Order> orderList = orderMapper.selectOrderStatusByCreateTime(Const.OrderStatusEnum.NO_PAY.getCode(), DateTimeUtil.dateToStr(closeDate));
+        List<Order> orderList = orderMapper.selectOrderStatusByCreateTime(Const.OrderStatusEnum.NO_PAY.getCode(), DateTimeUtils.dateToStr(closeDate));
         for (Order order : orderList) {
             List<OrderItem> orderItemList = orderItemMapper.getByOrderNo(order.getOrderNo());
             for (OrderItem orderItem : orderItemList) {

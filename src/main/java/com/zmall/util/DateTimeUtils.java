@@ -8,13 +8,17 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
- * @ClassName: DateTimeUtil
+ * @ClassName: DateTimeUtils
  * @Date 2019-09-15 23:45
  * @Author duanxin
  **/
-public class DateTimeUtil {
+public class DateTimeUtils {
 
-    public static final String STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final String STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+    static String getStandardFormat(){
+        return STANDARD_FORMAT;
+    }
 
     public static Date strToDate(String dateTimeStr,String formatStr){
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern(formatStr);
@@ -45,7 +49,7 @@ public class DateTimeUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(DateTimeUtil.dateToStr(new Date()));
+        System.out.println(DateTimeUtils.dateToStr(new Date()));
         //System.out.println(DateTimeUtil.strToDate("2019-09-15 11:11:11","yyyy-MM-dd HH:mm:ss"));
     }
 }

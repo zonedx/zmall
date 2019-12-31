@@ -10,8 +10,8 @@ import com.zmall.dao.ProductMapper;
 import com.zmall.pojo.Cart;
 import com.zmall.pojo.Product;
 import com.zmall.service.ICartService;
-import com.zmall.util.BigDecimalUtil;
-import com.zmall.util.PropertiesUtil;
+import com.zmall.util.BigDecimalUtils;
+import com.zmall.util.PropertiesUtils;
 import com.zmall.vo.CartProductVo;
 import com.zmall.vo.CartVo;
 import org.apache.commons.collections.CollectionUtils;
@@ -150,14 +150,14 @@ public class CartServiceImpl implements ICartService {
                     }
                     cartProductVo.setQuantity(buyLimitCount);
                     //计算总价--某个商品
-                    cartProductVo.setProductTotalPrice(BigDecimalUtil.mul(product.getPrice().doubleValue(), cartItem.getQuantity()));
+                    cartProductVo.setProductTotalPrice(BigDecimalUtils.mul(product.getPrice().doubleValue(), cartItem.getQuantity()));
                     cartProductVo.setProductChecked(cartItem.getChecked());
 
                 }
 
                 if (cartItem.getChecked() == Const.Cart.CHECKED) {
                     //如果已经勾选，增加到整个的购物车总价中
-                    cartTotalPrice = BigDecimalUtil.add(cartTotalPrice.doubleValue(), cartProductVo.getProductTotalPrice().doubleValue());
+                    cartTotalPrice = BigDecimalUtils.add(cartTotalPrice.doubleValue(), cartProductVo.getProductTotalPrice().doubleValue());
                 }
                 cartProductVoList.add(cartProductVo);
             }
@@ -165,7 +165,7 @@ public class CartServiceImpl implements ICartService {
         cartVo.setCartTotalPrice(cartTotalPrice);
         cartVo.setCartProductVoList(cartProductVoList);
         cartVo.setAllChecked(this.getAllCheckedStatus(userId));
-        cartVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
+        cartVo.setImageHost(PropertiesUtils.getProperty("ftp.server.http.prefix"));
 
         return cartVo;
 

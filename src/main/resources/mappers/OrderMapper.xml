@@ -277,7 +277,7 @@
   <update id="closeOrderByOrderId" parameterType="int" >
     update
     mmall_order
-    set status = 0
+    set status = 0,close_time=now(),update_time=now(),end_time=now()
     where id = #{id}
   </update>
 </mapper>

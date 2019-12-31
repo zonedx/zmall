@@ -2,6 +2,7 @@ package com.zmall.controller.portal;
 
 import com.github.pagehelper.PageInfo;
 import com.zmall.common.ServerResponse;
+import com.zmall.controller.common.CurrentUser;
 import com.zmall.controller.common.Login;
 import com.zmall.pojo.Shipping;
 import com.zmall.pojo.User;
@@ -36,7 +37,7 @@ public class ShippingController {
             @ApiImplicitParam(name = "shipping", value = "shipping对象", required = true, paramType = "query", dataType = "Shipping")
     })
     @PostMapping("add.do")
-    public ServerResponse add(User user, Shipping shipping) {
+    public ServerResponse add(@CurrentUser User user, Shipping shipping) {
         return iShippingService.add(user.getId(), shipping);
     }
 
@@ -45,7 +46,7 @@ public class ShippingController {
             @ApiImplicitParam(name = "shippingId", value = "地址编号", required = true, paramType = "query", dataType = "int")
     })
     @PostMapping("delete.do")
-    public ServerResponse delete(User user, Integer shippingId) {
+    public ServerResponse delete(@CurrentUser User user, Integer shippingId) {
         return iShippingService.delete(user.getId(), shippingId);
     }
 
@@ -54,13 +55,13 @@ public class ShippingController {
             @ApiImplicitParam(name = "shipping", value = "shipping对象", required = true, paramType = "query", dataType = "Shipping")
     })
     @PostMapping("update.do")
-    public ServerResponse update(User user, Shipping shipping) {
+    public ServerResponse update(@CurrentUser User user, Shipping shipping) {
         return iShippingService.update(user.getId(), shipping);
     }
 
     @ApiOperation(value = "选择收货地址")
     @GetMapping("select.do")
-    public ServerResponse<Shipping> select(User user, Integer shippingId) {
+    public ServerResponse<Shipping> select(@CurrentUser User user, Integer shippingId) {
         return iShippingService.select(user.getId(), shippingId);
     }
 
@@ -68,7 +69,7 @@ public class ShippingController {
     @GetMapping("list.do")
     public ServerResponse<PageInfo> list(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                          @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-                                         User user) {
+                                         @CurrentUser User user) {
         return iShippingService.list(user.getId(), pageNum, pageSize);
     }
 }

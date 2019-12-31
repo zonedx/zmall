@@ -71,11 +71,6 @@
       <version>2.7.0</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
-      <version>1.9.12</version>
-    </dependency>
 
     <dependency>
       <groupId>commons-dbcp</groupId>

@@ -131,7 +131,9 @@ public class JsonUtil {
         });
 
         List<User> userList2 = JsonUtil.string2Obj(userListString,List.class,User.class);
+        assert userList1 != null;
         log.info(userList1.toString());
+        assert userList2 != null;
         log.info(userList2.toString());
 
         System.out.println("end");

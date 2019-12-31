@@ -7,6 +7,7 @@ import com.google.common.collect.Maps;
 import com.zmall.common.Const;
 import com.zmall.common.ResponseCode;
 import com.zmall.common.ServerResponse;
+import com.zmall.controller.common.CurrentUser;
 import com.zmall.controller.common.Login;
 import com.zmall.pojo.User;
 import com.zmall.service.IOrderService;
@@ -50,7 +51,7 @@ public class OrderController {
             @ApiImplicitParam(name = "shippingId", value = "用户地址id", required = true, paramType = "query", dataType = "int")
     })
     @PostMapping("create.do")
-    public ServerResponse create(User user, Integer shippingId ) {
+    public ServerResponse create(@CurrentUser User user, Integer shippingId ) {
         return iOrderService.create(user.getId(),shippingId);
     }
 
@@ -59,13 +60,13 @@ public class OrderController {
             @ApiImplicitParam(name = "orderNo", value = "订单编号", required = true, paramType = "query", dataType = "long")
     })
     @PostMapping("cancel.do")
-    public ServerResponse cancel(User user, Long orderNo ) {
+    public ServerResponse cancel(@CurrentUser User user, Long orderNo ) {
         return iOrderService.cancel(user.getId(),orderNo);
     }
 
     @ApiOperation(value = "")
     @GetMapping("get_order_cart_product.do")
-    public ServerResponse getOrderCartProduct(User user) {
+    public ServerResponse getOrderCartProduct(@CurrentUser User user) {
         return iOrderService.getOrderCartProduct(user.getId());
     }
 
@@ -74,7 +75,7 @@ public class OrderController {
             @ApiImplicitParam(name = "orderNo", value = "订单编号", required = true, paramType = "query", dataType = "long")
     })
     @PostMapping("detail.do")
-    public ServerResponse getOrderDetail(User user,Long orderNo) {
+    public ServerResponse getOrderDetail(@CurrentUser User user,Long orderNo) {
         return iOrderService.getOrderDetail(user.getId(),orderNo);
     }
 
@@ -84,7 +85,7 @@ public class OrderController {
             @ApiImplicitParam(name = "pageSize", value = "每页显示数量，默认10", paramType = "query", dataType = "int")
     })
     @GetMapping("list.do")
-    public ServerResponse list(User user, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10") int pageSize) {
+    public ServerResponse list(@CurrentUser User user, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10") int pageSize) {
         return iOrderService.getOrderList(user.getId(),pageNum,pageSize);
     }
 

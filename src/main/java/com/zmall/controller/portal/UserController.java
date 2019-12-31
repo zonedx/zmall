@@ -33,11 +33,12 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/user/")
 public class UserController {
 
-    @Autowired
     private IUserService iUserService;
 
     @Autowired
-    RedisPool redisPool;
+    public UserController(IUserService iUserService) {
+        this.iUserService = iUserService;
+    }
 
     /**
      * 用户登录
@@ -102,7 +103,7 @@ public class UserController {
     @Login
     @ApiOperation(value = "获取用户信息")
     @RequestMapping(value = "get_user_info.do", method = RequestMethod.GET)
-    public ServerResponse<User> getUserInfo(User user) {
+    public ServerResponse<User> getUserInfo(@CurrentUser User user) {
         if (user != null) {
             return ServerResponse.createBySuccess(user);
         }
@@ -150,7 +151,7 @@ public class UserController {
             @ApiImplicitParam(name = "passwordNew", value = "新密码", required = true, paramType = "query", dataType = "string")
     })
     @RequestMapping(value = "reset_password.do", method = RequestMethod.POST)
-    public ServerResponse<String> resetPassword(User user, String passwordOld, String passwordNew) {
+    public ServerResponse<String> resetPassword(@CurrentUser User user, String passwordOld, String passwordNew) {
         return iUserService.resetPassword(passwordOld, passwordNew, user);
     }
 
@@ -161,7 +162,7 @@ public class UserController {
             @ApiImplicitParam(name = "user", value = "表单提交的user信息", required = true, paramType = "query", dataType = "User")
     })
     @RequestMapping(value = "update_information.do", method = RequestMethod.POST)
-    public ServerResponse<User> updateInformation(HttpSession session,User currentUser,User user){
+    public ServerResponse<User> updateInformation(HttpSession session,@CurrentUser User currentUser,User user){
         user.setId(currentUser.getId());
         user.setUsername(currentUser.getUsername());
         ServerResponse<User> response = iUserService.updateInformation(user);

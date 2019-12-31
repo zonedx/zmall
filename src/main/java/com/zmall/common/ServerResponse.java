@@ -1,6 +1,8 @@
 package com.zmall.common;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
@@ -10,8 +12,9 @@ import java.io.Serializable;
  * @Date 2019-09-15 02:01
  * @Author duanxin
  **/
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-//保证序列化json的时候，如果是null 的对象，key也会消失
+//保证序列化json的时候，如果是null 的对象，key也会消失  Springboot中JsonSerialize注解被弃用
+//@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ServerResponse<T> implements Serializable {
 
     private int status;
@@ -37,8 +40,8 @@ public class ServerResponse<T> implements Serializable {
         this.msg = msg;
     }
 
-    @JsonIgnore
     //使之不在json序列化在结果中
+    @JsonIgnore
     public boolean isSuccess(){
         return  this.status == ResponseCode.SUCCESS.getCode();
     }

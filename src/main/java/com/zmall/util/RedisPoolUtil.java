@@ -38,7 +38,7 @@ public class RedisPoolUtil {
         return result;
     }
 
-//    //exTime单位是秒
+    //exTime单位是秒
     public static String setEx(String key,String value,int exTime){
         Jedis jedis = null;
         String result = null;

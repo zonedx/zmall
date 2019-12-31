@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
+ * 用户执行某项操作后自动重置登录时间
  * @ClassName: SessionExpireFilter
  * @Date 2019-10-10 17:30
  * @Author duanxin

@@ -18,6 +18,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,12 +40,15 @@ import java.util.Map;
 @RestController
 @Login
 @RequestMapping("/order/")
+@Slf4j
 public class OrderController {
 
-    private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
+    private IOrderService iOrderService;
 
     @Autowired
-    private IOrderService iOrderService;
+    public OrderController(IOrderService iOrderService) {
+        this.iOrderService = iOrderService;
+    }
 
     @ApiOperation(value = "创建订单")
     @ApiImplicitParams({
@@ -124,7 +128,7 @@ public class OrderController {
             }
             params.put(name, valueStr);
         }
-        logger.info("支付宝回调，sign{},trade_status{},参数:{}", params.get("sign"), params.get("trade_status"), params.toString());
+        log.info("支付宝回调，sign{},trade_status{},参数:{}", params.get("sign"), params.get("trade_status"), params.toString());
 
         //非常重要，验证回调的正确性，是不是支付宝发的，并且还要避免重复通知
         params.remove("sign_type");
@@ -135,7 +139,7 @@ public class OrderController {
             }
 
         } catch (AlipayApiException e) {
-            logger.error("支付宝验证回调异常", e);
+            log.error("支付宝验证回调异常", e);
         }
 
         //todo 验证各种数据

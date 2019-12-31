@@ -23,8 +23,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/product/")
 public class ProductController {
 
-    @Autowired
     private IProductService iProductService;
+
+    @Autowired
+    public ProductController(IProductService iProductService) {
+        this.iProductService = iProductService;
+    }
 
     @ApiOperation(value = "商品详情")
     @ApiImplicitParams({

@@ -20,8 +20,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/manager/category/")
 public class CategoryManagerController {
 
-    @Autowired
     private ICategoryService iCategoryService;
+
+    @Autowired
+    public CategoryManagerController(ICategoryService iCategoryService) {
+        this.iCategoryService = iCategoryService;
+    }
 
     /**
      * 添加分类
@@ -64,7 +68,7 @@ public class CategoryManagerController {
      * 查询某分类的子分类
      *
      * @param categoryId
-     * @return
+     * @return ServerResponse
      */
     @ApiOperation(value = "查询某分类的子分类")
     @ApiImplicitParams({
@@ -80,7 +84,7 @@ public class CategoryManagerController {
      * 查询某分类的子分类（包括子孙）
      *
      * @param categoryId
-     * @return
+     * @return ServerResponse
      */
     @ApiOperation(value = "查询某分类的子分类（包括子孙）")
     @ApiImplicitParams({

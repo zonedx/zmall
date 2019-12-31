@@ -24,8 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/manager/order/")
 public class OrderManagerController {
 
-    @Autowired
     private IOrderService iOrderService;
+
+    @Autowired
+    public OrderManagerController(IOrderService iOrderService) {
+        this.iOrderService = iOrderService;
+    }
 
     @ApiOperation(value = "订单列表")
     @ApiImplicitParams({

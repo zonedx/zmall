@@ -32,11 +32,15 @@ import java.util.Map;
 @RequestMapping("/manager/product/")
 public class ProductManagerController {
 
-    @Autowired
     private IProductService iProductService;
 
-    @Autowired
     private IFileService iFileService;
+
+    @Autowired
+    public ProductManagerController(IProductService iProductService, IFileService iFileService) {
+        this.iProductService = iProductService;
+        this.iFileService = iFileService;
+    }
 
 
     /**

@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -19,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -43,7 +41,7 @@ public class AuthorityInterceptor extends HandlerInterceptorAdapter {
 
         //解析参数，具体的参数key以及value是什么，打印日志
         StringBuilder builder = new StringBuilder();
-        Map paramMap = httpServletRequest.getParameterMap();
+        Map<String, String[]> paramMap = httpServletRequest.getParameterMap();
         for (Object o : paramMap.entrySet()) {
             Map.Entry entry = (Map.Entry) o;
             String mapKey = (String) entry.getKey();
@@ -78,17 +76,21 @@ public class AuthorityInterceptor extends HandlerInterceptorAdapter {
         if (user == null || (user.getRole() != Const.Role.ROLE_ADMIN)){
             //返回false不会调用controller中的方法
 
-            httpServletResponse.reset();//这里要添加reset(),否则会报异常  getWriter() has already been called for this response
-            httpServletResponse.setCharacterEncoding("UTF-8");//这里要设置编码   否则会乱码
-            httpServletResponse.setContentType("application/json;charset=UTF-8");//这里要设置返回值的类型，因为全部是json接口
+            //这里要添加reset(),否则会报异常  getWriter() has already been called for this response
+            httpServletResponse.reset();
+
+            //这里要设置编码   否则会乱码
+            httpServletResponse.setCharacterEncoding("UTF-8");
+            //这里要设置返回值的类型，因为全部是json接口
+            httpServletResponse.setContentType("application/json;charset=UTF-8");
 
             PrintWriter out = httpServletResponse.getWriter();
 
             //上传由于富文本控件要求，要特殊处理返回值，这里面区分是否登录以及是否有权限
             if (user == null){
                 if (StringUtils.equals(className,"ProductManageController") && StringUtils.equals(methodName,"richtextImgUpload")){
-                    Map resultMap = Maps.newHashMap();
-                    resultMap.put("success",false);
+                    Map<String,String> resultMap = Maps.newHashMap();
+                    resultMap.put("success","false");
                     resultMap.put("msg","请登录管理员");
                     out.print(JsonUtil.obj2String(resultMap));
                 }else {
@@ -96,8 +98,8 @@ public class AuthorityInterceptor extends HandlerInterceptorAdapter {
                 }
             }else {
                 if (StringUtils.equals(className,"ProductManageController") && StringUtils.equals(methodName,"richtextImgUpload")){
-                    Map resultMap = Maps.newHashMap();
-                    resultMap.put("success",false);
+                    Map<String,String> resultMap = Maps.newHashMap();
+                    resultMap.put("success","false");
                     resultMap.put("msg","无权限操作");
                     out.print(JsonUtil.obj2String(resultMap));
                 }else {

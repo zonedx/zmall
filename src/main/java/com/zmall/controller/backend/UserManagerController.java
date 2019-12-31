@@ -24,8 +24,12 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/manager/user/")
 public class UserManagerController {
 
-    @Autowired
     private IUserService iUserService;
+
+    @Autowired
+    public UserManagerController(IUserService iUserService) {
+        this.iUserService = iUserService;
+    }
 
     @RequestMapping(value = "login.do",method = RequestMethod.POST)
     @ResponseBody

@@ -23,11 +23,14 @@ public class MixPropertySourceFactory extends DefaultPropertySourceFactory {
         if (!resource.getResource().exists()) {
             // return an empty Properties
             return new PropertiesPropertySource(sourceName, new Properties());
-        } else if (sourceName.endsWith(".yml") || sourceName.endsWith(".yaml")) {
-            Properties propertiesFromYaml = loadYaml(resource);
-            return new PropertiesPropertySource(sourceName, propertiesFromYaml);
         } else {
-            return super.createPropertySource(name, resource);
+            assert sourceName != null;
+            if (sourceName.endsWith(".yml") || sourceName.endsWith(".yaml")) {
+                Properties propertiesFromYaml = loadYaml(resource);
+                return new PropertiesPropertySource(sourceName, propertiesFromYaml);
+            } else {
+                return super.createPropertySource(name, resource);
+            }
         }
     }
     /**

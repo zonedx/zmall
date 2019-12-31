@@ -1,7 +1,6 @@
 package com.zmall.controller.portal;
 
 import com.zmall.common.Const;
-import com.zmall.common.RedisPool;
 import com.zmall.common.ServerResponse;
 import com.zmall.controller.common.CurrentUser;
 import com.zmall.controller.common.Login;

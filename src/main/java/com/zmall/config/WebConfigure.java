@@ -18,10 +18,14 @@ import java.util.List;
 @Configuration
 public class WebConfigure implements WebMvcConfigurer {
 
-    @Autowired
     private AuthorityInterceptor authorityInterceptor;
-    @Autowired
     private LoginResolver loginResolver;
+
+    @Autowired
+    public WebConfigure(AuthorityInterceptor authorityInterceptor, LoginResolver loginResolver) {
+        this.authorityInterceptor = authorityInterceptor;
+        this.loginResolver = loginResolver;
+    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

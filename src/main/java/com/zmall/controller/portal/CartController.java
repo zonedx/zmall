@@ -29,8 +29,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/cart/")
 public class CartController {
 
-    @Autowired
     private ICartService iCartService;
+
+    @Autowired
+    public CartController(ICartService iCartService) {
+        this.iCartService = iCartService;
+    }
 
     @ApiOperation(value = "查看购物车")
     @GetMapping("list.do")

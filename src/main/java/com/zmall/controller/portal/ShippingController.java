@@ -11,8 +11,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,10 +25,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/shipping/")
 public class ShippingController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ShippingController.class);
+    private IShippingService iShippingService;
 
     @Autowired
-    private IShippingService iShippingService;
+    public ShippingController(IShippingService iShippingService) {
+        this.iShippingService = iShippingService;
+    }
 
     @ApiOperation(value = "新增收货地址")
     @ApiImplicitParams({

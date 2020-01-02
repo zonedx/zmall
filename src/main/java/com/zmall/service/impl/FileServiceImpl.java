@@ -31,11 +31,12 @@ public class FileServiceImpl implements IFileService {
 
         File fileDir = new File(path);
         if (!fileDir.exists()) {
-            boolean isSuccess = fileDir.setWritable(true);
-            if (!isSuccess) {
-                log.info("{} set writable error！", fileDir);
-                throw new RuntimeException("设置文件权限失败！");
-            }
+            boolean isSuccess ;
+//            boolean isSuccess = fileDir.setWritable(true);
+//            if (!isSuccess) {
+//                log.info("{} set writable error！", fileDir);
+//                throw new RuntimeException("设置文件权限失败！");
+//            }
             isSuccess = fileDir.mkdirs();
             if (!isSuccess) {
                 log.info("{} mkdirs error！", fileDir);

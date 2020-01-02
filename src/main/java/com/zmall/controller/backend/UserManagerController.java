@@ -21,7 +21,7 @@ import javax.servlet.http.HttpSession;
 
 @Api(tags = "uer-manager")
 @Controller
-@RequestMapping("/manager/user/")
+@RequestMapping("/manage/user/")
 public class UserManagerController {
 
     private IUserService iUserService;

@@ -91,7 +91,6 @@ public class UserController {
         return iUserService.checkValid(str, type);
     }
 
-    @Login
     @ApiOperation(value = "获取用户信息")
     @RequestMapping(value = "get_user_info.do", method = RequestMethod.GET)
     public ServerResponse<User> getUserInfo(@CurrentUser User user) {

@@ -70,7 +70,7 @@ public class OrderController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "orderNo", value = "订单编号", required = true, paramType = "query", dataType = "long")
     })
-    @PostMapping("detail.do")
+    @GetMapping("detail.do")
     public ServerResponse getOrderDetail(@CurrentUser User user,Long orderNo) {
         return iOrderService.getOrderDetail(user.getId(),orderNo);
     }

@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
  **/
 @Api(tags = {"cart"})
 @Controller
-@Login
 @RequestMapping("/cart/")
 public class CartController {
 
@@ -36,6 +35,7 @@ public class CartController {
         this.iCartService = iCartService;
     }
 
+    @Login
     @ApiOperation(value = "查看购物车")
     @GetMapping("list.do")
     @ResponseBody
@@ -43,6 +43,7 @@ public class CartController {
         return iCartService.list(user.getId());
     }
 
+    @Login
     @ApiOperation(value = "加入购物车")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "count", value = "商品数量", required = true, paramType = "query", dataType = "int"),
@@ -54,6 +55,7 @@ public class CartController {
         return iCartService.add(user.getId(), productId, count);
     }
 
+    @Login
     @ApiOperation(value = "更新购物车")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "count", value = "商品数量", required = true, paramType = "query", dataType = "int"),
@@ -65,6 +67,7 @@ public class CartController {
         return iCartService.update(user.getId(), productId, count);
     }
 
+    @Login
     @ApiOperation(value = "移除购物车")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "productIds", value = "商品编号[xx,xx]", required = true, paramType = "query", dataType = "string")
@@ -80,6 +83,7 @@ public class CartController {
      * @param user
      * @return
      */
+    @Login
     @ApiOperation(value = "购物车全选")
     @PostMapping("select_all.do")
     @ResponseBody
@@ -87,6 +91,7 @@ public class CartController {
         return iCartService.selectOrUnSelect(user.getId(), null, Const.Cart.CHECKED);
     }
 
+    @Login
     @ApiOperation(value = "购物车全反选")
     @PostMapping("un_select_all.do")
     @ResponseBody
@@ -100,6 +105,7 @@ public class CartController {
      * @param user
      * @return
      */
+    @Login
     @ApiOperation(value = "单独选中")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "productId", value = "商品编号", required = true, paramType = "query", dataType = "int")
@@ -110,6 +116,7 @@ public class CartController {
         return iCartService.selectOrUnSelect(user.getId(), productId, Const.Cart.CHECKED);
     }
 
+    @Login
     @ApiOperation(value = "单独反选")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "productId", value = "商品编号", required = true, paramType = "query", dataType = "int")
@@ -130,7 +137,9 @@ public class CartController {
     @GetMapping("get_cart_product_count.do")
     @ResponseBody
     public ServerResponse<Integer> getCartProductCount(@CurrentUser User user) {
+        if (user == null){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+        }
         return iCartService.getCartProductCount(user.getId());
-
     }
 }

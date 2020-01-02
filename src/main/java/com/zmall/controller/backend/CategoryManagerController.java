@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  **/
 @Api(tags = "category-manager")
 @RestController
-@RequestMapping("/manager/category/")
+@RequestMapping("/manage/category/")
 public class CategoryManagerController {
 
     private ICategoryService iCategoryService;
@@ -39,7 +39,7 @@ public class CategoryManagerController {
             @ApiImplicitParam(name = "categoryName", value = "分类名称", required = true, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "parentId", value = "分类父亲类别id（例如：电子产品：1，手机：2，手机的parentId=1）", required = true, paramType = "query", dataType = "int")
     })
-    @RequestMapping(value = "add_category.do", method = RequestMethod.POST)
+    @RequestMapping(value = "add_category.do", method = RequestMethod.GET)
     public ServerResponse addCategory(String categoryName, @RequestParam(value = "parentId", defaultValue = "0") int parentId) {
         //全部通过拦截器验证是否登录以及权限
         return iCategoryService.addCategory(categoryName, parentId);
@@ -58,7 +58,7 @@ public class CategoryManagerController {
             @ApiImplicitParam(name = "categoryId", value = "分类id", required = true, paramType = "query", dataType = "int"),
             @ApiImplicitParam(name = "categoryName", value = "分类名称", required = true, paramType = "query", dataType = "string")
     })
-    @RequestMapping(value = "set_category_name.do", method = RequestMethod.POST)
+    @RequestMapping(value = "set_category_name.do", method = RequestMethod.GET)
     public ServerResponse setCategoryName(Integer categoryId, String categoryName) {
         //全部通过拦截器验证是否登录以及权限
         return iCategoryService.updateCategoryName(categoryId, categoryName);

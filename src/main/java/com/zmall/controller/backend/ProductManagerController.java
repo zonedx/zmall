@@ -29,7 +29,7 @@ import java.util.Map;
  **/
 @Api(tags = "product-manager")
 @RestController
-@RequestMapping("/manager/product/")
+@RequestMapping("/manage/product/")
 public class ProductManagerController {
 
     private IProductService iProductService;
@@ -50,7 +50,7 @@ public class ProductManagerController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "product", value = "product对象", required = true, paramType = "query", dataType = "Product")
     })
-    @RequestMapping(value = "save.do",method = RequestMethod.POST)
+    @RequestMapping(value = "save.do",method = RequestMethod.GET)
     public ServerResponse productSave(Product product){
         //全部通过拦截器验证是否登录以及权限
         return iProductService.saveOrUpdateProduct(product);
@@ -64,7 +64,7 @@ public class ProductManagerController {
             @ApiImplicitParam(name = "productId", value = "产品id", required = true, paramType = "query", dataType = "int"),
             @ApiImplicitParam(name = "status", value = "产品状态", required = true, paramType = "query", dataType = "int")
     })
-    @RequestMapping(value = "set_sale_status.do",method = RequestMethod.POST)
+    @RequestMapping(value = "set_sale_status.do",method = RequestMethod.GET)
     public ServerResponse setSaleStatus(Integer productId,Integer status){
         //全部通过拦截器验证是否登录以及权限
         return iProductService.setSaleStatus(productId,status);
@@ -115,9 +115,10 @@ public class ProductManagerController {
     }
 
     @ApiOperation(value = "更新产品")
-    @RequestMapping(value = "upload.do",method = RequestMethod.POST)
+    @RequestMapping(value = "upload.do",method = RequestMethod.GET)
     public ServerResponse upload(@RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest request){
         //全部通过拦截器验证是否登录以及权限
+//        String path = "/Users/zone/ftp/upload";
         String path = request.getSession().getServletContext().getRealPath("upload");
         String targetFileName = iFileService.upload(file,path);
         String url = PropertiesUtils.getProperty("ftp.server.http.prefix")+targetFileName;
@@ -129,7 +130,7 @@ public class ProductManagerController {
     }
 
     @ApiOperation(value = "更新产品，可上传富文本")
-    @RequestMapping("richtext_img_upload.do")
+    @RequestMapping(value = "richtext_img_upload.do",method = RequestMethod.GET)
     public Map richtextImgUpload(@RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response){
         Map<String,String> resultMap = Maps.newHashMap();
         //全部通过拦截器验证是否登录以及权限

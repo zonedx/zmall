@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  **/
 @Api(tags = "order-manager")
 @RestController
-@RequestMapping("/manager/order/")
+@RequestMapping("/manage/order/")
 public class OrderManagerController {
 
     private IOrderService iOrderService;
@@ -68,7 +68,7 @@ public class OrderManagerController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "orderNo", value = "订单编号", required = true, paramType = "query", dataType = "long")
     })
-    @RequestMapping(value = "send_goods.do", method = RequestMethod.POST)
+    @RequestMapping(value = "send_goods.do", method = RequestMethod.GET)
     public ServerResponse<String> orderSendGoods(Long orderNo) {
         //全部通过拦截器验证是否登录以及权限
         return iOrderService.manageSendGoods(orderNo);

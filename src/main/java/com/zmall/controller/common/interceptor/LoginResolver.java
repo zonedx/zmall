@@ -37,6 +37,7 @@ public class LoginResolver extends HandlerInterceptorAdapter implements HandlerM
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (handler instanceof HandlerMethod) {
             HandlerMethod method = (HandlerMethod) handler;
+            final User user = getUser(request);
             Login login;
             login = method.getMethod().getAnnotation(Login.class);
             if (login == null) {
@@ -44,13 +45,16 @@ public class LoginResolver extends HandlerInterceptorAdapter implements HandlerM
             }
             if (login != null) {
                 int role = login.value();
-                final User user = getUser(request);
                 if (user == null) {
                     throw new LogicException(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
                 }
                 if (user.getRole() == null || user.getRole() < role) {
                     throw new LogicException(ResponseCode.NO_PERMISSION.getCode(), ResponseCode.NO_PERMISSION.getDesc());
                 }
+                userThreadLocal.set(user);
+            }
+
+            if (user != null && userThreadLocal.get() == null){
                 userThreadLocal.set(user);
             }
         }

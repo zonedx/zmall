@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 public class CookieUtils {
 
-    private final static String COOKIE_DOMAIN = "dlzonemall.com";
+    private final static String COOKIE_DOMAIN = "zonedx.cn";
     private final static String COOKIE_NAME = "zonemall_login_token";
 
     public static String readLoginToken(HttpServletRequest request) {

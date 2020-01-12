@@ -42,15 +42,18 @@ redis:
 #ftp
 ftp:
   server:
-    ip: 127.0.0.1
+#    ip: 127.0.0.1
+    ip: 123.56.112.20
     http:
-      prefix: ftp://127.0.0.1/
+#      prefix: ftp://127.0.0.1/
+#       prefix: http://www.img.dlzonemall.com/file/
+      prefix: http://www.zonedx.cn/file/
   user: ftpuser
   pass: 123456
 
 alipay:
   callback:
-    url: http://www.zonedx.cn/order/alipay_callback.do
+    url: http://www.happymmall.com/order/alipay_callback.do
 
 password:
   salt: geelysdafaqj23ou89ZXcj@#$@#$#@KJdjklj;D../dSF.,

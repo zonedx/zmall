@@ -100,7 +100,7 @@ public class OrderController {
             @ApiImplicitParam(name = "orderNo", value = "订单编号", required = true, paramType = "query", dataType = "long")
     })
     @PostMapping("pay.do")
-    public ServerResponse pay(User user, Long orderNo, HttpServletRequest request) {
+    public ServerResponse pay(@CurrentUser User user, Long orderNo, HttpServletRequest request) {
         String path = request.getSession().getServletContext().getRealPath("upload");
         return iOrderService.pay(orderNo, user.getId(), path);
     }

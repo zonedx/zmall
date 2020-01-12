@@ -100,7 +100,6 @@ public class UserController {
         return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
     }
 
-    @Login
     @ApiOperation(value = "遗忘密码获取问题")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "username", value = "用户名", required = true, paramType = "query", dataType = "string")
@@ -110,7 +109,6 @@ public class UserController {
         return iUserService.selectQuestion(username);
     }
 
-    @Login
     @ApiOperation(value = "遗忘密码检查问题答案")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "username", value = "用户名", required = true, paramType = "query", dataType = "string"),
@@ -122,8 +120,7 @@ public class UserController {
         return iUserService.checkAnswer(username, question, answer);
     }
 
-    @Login
-    @ApiOperation(value = "遗忘密码检查问题答案")
+    @ApiOperation(value = "遗忘密码重置密码")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "username", value = "用户名", required = true, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "passwordNew", value = "新密码", required = true, paramType = "query", dataType = "string"),

@@ -29,7 +29,7 @@ public class WebConfigure implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authorityInterceptor).addPathPatterns("/manage/**");
+//        registry.addInterceptor(authorityInterceptor).addPathPatterns("/manage/**");
         registry.addInterceptor(loginResolver);
     }
 

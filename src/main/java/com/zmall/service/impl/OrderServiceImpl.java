@@ -235,6 +235,7 @@ public class OrderServiceImpl implements IOrderService {
         orderItemVo.setProductId(orderItem.getProductId());
         orderItemVo.setCurrentUnitPrice(orderItem.getCurrentUnitPrice());
         orderItemVo.setProductName(orderItem.getProductName());
+        orderItemVo.setProductImage(orderItem.getProductImage());
         orderItemVo.setQuantity(orderItem.getQuantity());
         orderItemVo.setTotalPrice(orderItem.getTotalPrice());
         orderItemVo.setCreateTime(DateTimeUtils.dateToStr(orderItem.getCreateTime()));
@@ -426,12 +427,12 @@ public class OrderServiceImpl implements IOrderService {
 
                 File folder = new File(path);
                 if (!folder.exists()) {
-                    boolean isSuccess = folder.setWritable(true);
-                    if (!isSuccess) {
-                        log.info("{} set writable error！", folder);
-                        throw new RuntimeException("设置文件权限失败！");
-                    }
-                    isSuccess = folder.mkdirs();
+//                    boolean isSuccess = folder.setWritable(true);
+//                    if (!isSuccess) {
+//                        log.info("{} set writable error！", folder);
+//                        throw new RuntimeException("设置文件权限失败！");
+//                    }
+                    boolean isSuccess = folder.mkdirs();
                     log.info("{} mkdirs result: ", isSuccess);
                 }
                 // 需要修改为运行机器上的路径

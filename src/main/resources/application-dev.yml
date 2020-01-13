@@ -10,7 +10,11 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     dbcp2:
       initial-size: 20
-      min-evictable-idle-time-millis: 3600000
+      min-evictable-idle-time-millis: 1800000
+      time-between-eviction-runs-millis: 3600000
+      test-on-borrow: true
+      validation-query: "select 1"
+      test-while-idle: true
     tomcat:
       max-active: 50
       max-idle: 20

@@ -15,11 +15,9 @@ spring:
       test-on-borrow: true
       validation-query: "select 1"
       test-while-idle: true
-    tomcat:
-      max-active: 50
-      max-idle: 20
       min-idle: 10
-      max-wait: 10
+      max-idle: 20
+      max-wait-millis: 20000
       default-auto-commit: true
 
 mybatis:
